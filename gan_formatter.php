@@ -156,7 +156,7 @@ class HTML_Formatter {
 	 * @return bool|array Array of errors on failure, true on succes
 	 */
 	static function minify_javascript(&$root, $indent_string = ' ', $wrap_comment = true, $recursive = true) {
-		include_once('jsminplus.php');
+		include_once('third party/jsminplus.php');
 
 		$errors = array();
 		foreach($root->select('script:not-empty > "~text~"', false, $recursive, true) as $c) {
