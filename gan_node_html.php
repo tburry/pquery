@@ -3,6 +3,11 @@
  * @author Niels A.D.
  * @package Ganon
  */
+ 
+if (!defined('GANON_NO_INCLUDES')) {
+	include_once('gan_parser_html.php');
+	include_once('gan_selector_html.php');
+}
 
 /**
  * Holds (x)html/xml tag information like tag name, attributes,

@@ -3,6 +3,10 @@
  * @author Niels A.D.
  * @package Ganon
  */
+ 
+if (!defined('GANON_NO_INCLUDES')) {
+	include_once('gan_parser_html.php');
+}
 
 /**
  * Tokenizes a css selector query

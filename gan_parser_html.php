@@ -3,6 +3,12 @@
  * @author Niels A.D.
  * @package Ganon
  */
+ 
+if (!defined('GANON_NO_INCLUDES')) {
+	include_once('gan_tokenizer.php');
+	include_once('gan_node_html.php');
+	include_once('gan_selector_html.php');
+}
 
 /**
  * Parses a HTML document

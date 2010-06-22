@@ -50,6 +50,7 @@ function indent_text($text, $indent, $indent_string = '  ') {
 }
 
 if (!defined('GANON_NO_INCLUDES')) {
+	define('GANON_NO_INCLUDES');
 	include_once('gan_tokenizer.php');
 	include_once('gan_parser_html.php');
 	include_once('gan_node_html.php');
