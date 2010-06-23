@@ -24,7 +24,7 @@ define('PHP4', true); //Create for PHP4
 
 if (PHP4) {
 	$file_tpl = 'ganon_tpl.php4';
-	$file_out = '../../tags/php4/ganon.php';
+	$file_out = '../../tags/php4/ganon.php4';
 } else {
 	$file_tpl = 'ganon_tpl.php5';
 	$file_out = '../../tags/php5/ganon.php';
