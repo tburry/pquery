@@ -5,11 +5,13 @@
  * @link http://code.google.com/p/ganon/
  * @license http://dev.perl.org/licenses/artistic.html Artistic License
  */
- 
+
+ #!! <- Ignore when converting to single file
 if (!defined('GANON_NO_INCLUDES')) {
 	include_once('gan_parser_html.php');
 	include_once('gan_selector_html.php');
 }
+#!
 
 /**
  * Holds (x)html/xml tag information like tag name, attributes,
@@ -49,10 +51,16 @@ class HTML_Node {
 	 * ASP Node
 	 */
 	const NODE_ASP = 7;
+	
+	#php4 Compatibility with PHP4, this gets changed to a regular var in release tool
+	#static $NODE_TYPE = self::NODE_ELEMENT;
+	#php4e
+	#php5
 	/**
 	 * Node type of class
 	 */
 	const NODE_TYPE = self::NODE_ELEMENT;
+	#php5e
 
 
 	/**
@@ -245,6 +253,10 @@ class HTML_Node {
 			$this->attributes = $tag['attributes'];
 		}
 	}
+	
+	#php4 PHP4 class constructor compatibility
+	#function HTML_Node($tag, $parent) {return $this->__construct($tag, $parent);}
+	#php4e
 
 	/**
 	 * Class destructor
@@ -2035,8 +2047,13 @@ CALLBACK;
 /**
  * Node subclass for text
  */
-class HTML_NODE_TEXT extends HTML_NODE {
+class HTML_NODE_TEXT extends HTML_Node {
+	#php4 Compatibility with PHP4, this gets changed to a regular var in release tool
+	#static $NODE_TYPE = self::NODE_TEXT;
+	#php4e
+	#php5
 	const NODE_TYPE = self::NODE_TEXT;
+	#php5e
 	var $tag = '~text~';
 
 	/**
@@ -2053,6 +2070,10 @@ class HTML_NODE_TEXT extends HTML_NODE {
 		$this->parent = $parent;
 		$this->text = $text;
 	}
+	
+	#php4 PHP4 class constructor compatibility
+	#function HTML_NODE_TEXT($parent, $text = '') {return $this->__construct($parent, $text);}
+	#php4e
 
 	function toString_attributes() {return '';}
 	function toString_content() {return $this->text;}
@@ -2062,8 +2083,13 @@ class HTML_NODE_TEXT extends HTML_NODE {
 /**
  * Node subclass for comments
  */
-class HTML_NODE_COMMENT extends HTML_NODE {
+class HTML_NODE_COMMENT extends HTML_Node {
+	#php4 Compatibility with PHP4, this gets changed to a regular var in release tool
+	#static $NODE_TYPE = self::NODE_COMMENT;
+	#php4e
+	#php5
 	const NODE_TYPE = self::NODE_COMMENT;
+	#php5e
 	var $tag = '~comment~';
 
 	/**
@@ -2080,6 +2106,10 @@ class HTML_NODE_COMMENT extends HTML_NODE {
 		$this->parent = $parent;
 		$this->text = $text;
 	}
+	
+	#php4 PHP4 class constructor compatibility
+	#function HTML_NODE_COMMENT($parent, $text = '') {return $this->__construct($parent, $text);}
+	#php4e
 
 	function toString_attributes() {return '';}
 	function toString_content() {return $this->text;}
@@ -2089,8 +2119,13 @@ class HTML_NODE_COMMENT extends HTML_NODE {
 /**
  * Node subclass for conditional tags
  */
-class HTML_NODE_CONDITIONAL extends HTML_NODE {
+class HTML_NODE_CONDITIONAL extends HTML_Node {
+	#php4 Compatibility with PHP4, this gets changed to a regular var in release tool
+	#static $NODE_TYPE = self::NODE_CONDITIONAL;
+	#php4e
+	#php5
 	const NODE_TYPE = self::NODE_CONDITIONAL;
+	#php5e
 	var $tag = '~conditional~';
 
 	/**
@@ -2109,6 +2144,10 @@ class HTML_NODE_CONDITIONAL extends HTML_NODE {
 		$this->hidden = $hidden;
 		$this->condition = $condition;
 	}
+	
+	#php4 PHP4 class constructor compatibility
+	#function HTML_NODE_CONDITIONAL($parent, $condition = '', $hidden = true) {return $this->__construct($parent, $condition, $hidden);}
+	#php4e
 
 	function toString_attributes() {return '';}
 	function toString($attributes = true, $recursive = true, $content_only = false) {
@@ -2131,8 +2170,13 @@ class HTML_NODE_CONDITIONAL extends HTML_NODE {
 /**
  * Node subclass for CDATA tags
  */
-class HTML_NODE_CDATA extends HTML_NODE {
+class HTML_NODE_CDATA extends HTML_Node {
+	#php4 Compatibility with PHP4, this gets changed to a regular var in release tool
+	#static $NODE_TYPE = self::NODE_CDATA;
+	#php4e
+	#php5
 	const NODE_TYPE = self::NODE_CDATA;
+	#php5e
 	var $tag = '~cdata~';
 
 	/**
@@ -2149,6 +2193,10 @@ class HTML_NODE_CDATA extends HTML_NODE {
 		$this->parent = $parent;
 		$this->text = $text;
 	}
+	
+	#php4 PHP4 class constructor compatibility
+	#function HTML_NODE_CDATA($parent, $text = '') {return $this->__construct($parent, $text);}
+	#php4e
 
 	function toString_attributes() {return '';}
 	function toString_content() {return $this->text;}
@@ -2158,8 +2206,13 @@ class HTML_NODE_CDATA extends HTML_NODE {
 /**
  * Node subclass for doctype tags
  */
-class HTML_NODE_DOCTYPE extends HTML_NODE {
+class HTML_NODE_DOCTYPE extends HTML_Node {
+	#php4 Compatibility with PHP4, this gets changed to a regular var in release tool
+	#static $NODE_TYPE = self::NODE_DOCTYPE;
+	#php4e
+	#php5
 	const NODE_TYPE = self::NODE_DOCTYPE;
+	#php5e
 	var $tag = '!DOCTYPE';
 
 	/**
@@ -2176,6 +2229,10 @@ class HTML_NODE_DOCTYPE extends HTML_NODE {
 		$this->parent = $parent;
 		$this->dtd = $dtd;
 	}
+	
+	#php4 PHP4 class constructor compatibility
+	#function HTML_NODE_DOCTYPE($parent, $dtd = '') {return $this->__construct($parent, $dtd);}
+	#php4e
 
 	function toString_attributes() {return '';}
 	function toString_content() {return $this->text;}
@@ -2185,7 +2242,7 @@ class HTML_NODE_DOCTYPE extends HTML_NODE {
 /**
  * Node subclass for embedded tags like xml, php and asp
  */
-class HTML_NODE_EMBEDDED extends HTML_NODE {
+class HTML_NODE_EMBEDDED extends HTML_Node {
 
 	/**
 	 * @var string
@@ -2218,6 +2275,10 @@ class HTML_NODE_EMBEDDED extends HTML_NODE {
 		$this->attributes = $attributes;
 		$this->self_close_str = $tag_char;
 	}
+	
+	#php4 PHP4 class constructor compatibility
+	#function HTML_NODE_EMBEDDED($parent, $tag_char = '', $tag = '', $text = '', $attributes = array()) {return $this->__construct($parent, $tag_char, $tag, $text, $attributes);}
+	#php4e
 
 	function toString($attributes = true, $recursive = true, $content_only = false) {
 		$s = '<'.$this->tag;
@@ -2233,7 +2294,12 @@ class HTML_NODE_EMBEDDED extends HTML_NODE {
  * Node subclass for "?" tags, like php and xml
  */
 class HTML_NODE_XML extends HTML_NODE_EMBEDDED {
+	#php4 Compatibility with PHP4, this gets changed to a regular var in release tool
+	#static $NODE_TYPE = self::NODE_XML;
+	#php4e
+	#php5
 	const NODE_TYPE = self::NODE_XML;
+	#php5e
 
 	/**
 	 * Class constructor
@@ -2245,13 +2311,22 @@ class HTML_NODE_XML extends HTML_NODE_EMBEDDED {
 	function __construct($parent, $tag = 'xml', $text = '', $attributes = array()) {
 		return parent::__construct($parent, '?', $tag, $text, $attributes);
 	}
+	
+	#php4 PHP4 class constructor compatibility
+	#function HTML_NODE_XML($parent, $tag = 'xml', $text = '', $attributes = array()) {return $this->__construct($parent, $tag, $text, $attributes);}
+	#php4e
 }
 
 /**
  * Node subclass for asp tags
  */
 class HTML_NODE_ASP extends HTML_NODE_EMBEDDED {
+	#php4 Compatibility with PHP4, this gets changed to a regular var in release tool
+	#static $NODE_TYPE = self::NODE_ASP;
+	#php4e
+	#php5
 	const NODE_TYPE = self::NODE_ASP;
+	#php5e
 
 	/**
 	 * Class constructor
@@ -2263,6 +2338,10 @@ class HTML_NODE_ASP extends HTML_NODE_EMBEDDED {
 	function __construct($parent, $tag = '', $text = '', $attributes = array()) {
 		return parent::__construct($parent, '%', $tag, $text, $attributes);
 	}
+	
+	#php4 PHP4 class constructor compatibility
+	#function HTML_NODE_ASP($parent, $tag = '', $text = '', $attributes = array()) {return $this->__construct($parent, $tag, $text, $attributes);}
+	#php4e
 }
 
 ?>

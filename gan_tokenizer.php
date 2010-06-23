@@ -39,7 +39,7 @@ class Tokenizer_Base {
 	/**
 	 * Whitespace token, used with whitespace
 	 */
-	const TOK_WHITESPACE= 2;
+	const TOK_WHITESPACE = 2;
 	/**
 	 * Identifier token, used with identifiers
 	 */
@@ -167,6 +167,10 @@ class Tokenizer_Base {
 
 		$this->setDoc($doc, $pos);
 	}
+	
+	#php4 PHP4 class constructor compatibility
+	#function Tokenizer_Base($doc = '', $pos = 0) {return $this->__construct($doc, $pos);}
+	#php4e
 
 	/**
 	 * Sets target document

@@ -27,30 +27,41 @@ function file_get_html($file, $return_root = true) {
 	return str_get_html(file_get_contents($file), $return_root);
 }
 
- /**
- * Compress all whitespace in string (to a single space)
- * @param string $text
- * @return string
- */
-function compress_whitespace($text) {
-	return preg_replace('`\s+`', ' ', $text);
-}
-
-/**
- * Indents text
- * @param string $text
- * @param int $indent
- * @param string $indent_string
- * @return string
- */
-function indent_text($text, $indent, $indent_string = '  ') {
-	if ($indent && $indent_string) {
-		return str_replace("\n", "\n".str_repeat($indent_string, $indent), $text);
-	} else {
-		return $text;
+if (version_compare(PHP_VERSION, '5.0.0', '<')) {
+	/**
+	 * PHP alternative to str_split, for backwards compatibility
+	 * @param string $string
+	 * @return string
+	 */
+	function str_split($string) {
+		$res = array();
+		$size = strlen($string);
+		for ($i = 0; $i < $size; $i++) {
+			$res[] = $string[$i];
+		}
+		
+		return $res;
 	}
 }
 
+if (version_compare(PHP_VERSION, '5.2.0', '<')) {
+	/**
+	 * PHP alternative to array_fill_keys, for backwards compatibility
+	 * @param array $keys
+	 * @param mixed $value
+	 * @return array
+	 */
+	function array_fill_keys($keys, $value) {
+		$res = array();
+		foreach($keys as $k) {
+			$res[$k] = $value;
+		}
+		
+		return $res;
+	}
+}
+
+#!! <- Ignore when converting to single file
 if (!defined('GANON_NO_INCLUDES')) {
 	define('GANON_NO_INCLUDES');
 	include_once('gan_tokenizer.php');
@@ -59,5 +70,6 @@ if (!defined('GANON_NO_INCLUDES')) {
 	include_once('gan_selector_html.php');
 	include_once('gan_formatter.php');
 }
+#!
 
 ?>

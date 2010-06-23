@@ -5,6 +5,30 @@
  * @link http://code.google.com/p/ganon/
  * @license http://dev.perl.org/licenses/artistic.html Artistic License
  */
+ 
+/**
+ * Compress all whitespace in string (to a single space)
+ * @param string $text
+ * @return string
+ */
+function compress_whitespace($text) {
+	return preg_replace('`\s+`', ' ', $text);
+}
+
+/**
+ * Indents text
+ * @param string $text
+ * @param int $indent
+ * @param string $indent_string
+ * @return string
+ */
+function indent_text($text, $indent, $indent_string = '  ') {
+	if ($indent && $indent_string) {
+		return str_replace("\n", "\n".str_repeat($indent_string, $indent), $text);
+	} else {
+		return $text;
+	}
+}
 
 /**
  * Class used to format/minify HTML nodes
@@ -117,6 +141,10 @@ class HTML_Formatter {
 	function __construct($options = array()) {
 		$this->options = array_merge($this->options, $options);
 	}
+	
+	#php4 PHP4 class constructor compatibility
+	#function HTML_Formatter($options = array()) {return $this->__construct($options);}
+	#php4e
 
 	/**
 	 * Class magic invoke method, performs {@link format()}
