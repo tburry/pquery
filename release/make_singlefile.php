@@ -24,10 +24,10 @@ define('PHP4', true); //Create for PHP4
 
 if (PHP4) {
 	$file_tpl = 'ganon_tpl.php4';
-	$file_out = 'ganon.php4';
+	$file_out = '../../tags/php4/ganon.php';
 } else {
 	$file_tpl = 'ganon_tpl.php5';
-	$file_out = 'ganon.php5';
+	$file_out = '../../tags/php5/ganon.php';
 }
 
 $constants = array();
@@ -36,7 +36,7 @@ $statics = array();
 function parse_file($file) {
 	global $constants, $statics;
 	
-	$source = file_get_contents($file) or die("Can\'t open file: $file");
+	$source = file_get_contents($file) or die("Can't open file: $file");
 	$tokens = token_get_all($source);
 	$output = '//START '.basename($file)."\n";
 	$do_output = true;
@@ -166,7 +166,7 @@ if (PHP4) {
 	$tpl = str_replace('##constants##', $s, $tpl);
 }
 
-$f = fopen($file_out, 'w') or die("Can\'t open file: $file_out");
+$f = fopen($file_out, 'w') or die("Can't open file: $file_out");
 fwrite($f, $tpl);
 fclose($f);
 
