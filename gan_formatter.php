@@ -247,16 +247,17 @@ class HTML_Formatter {
 		$in_block = isset($this->block_elements[$root_tag]) && $this->block_elements[$root_tag]['as_block'];
 		$child_count = count($root->children);
 
+		if (isset($this->options['attributes_case']) && $this->options['attributes_case']) {
+			$root->attributes = array_change_key_case($root->attributes, $this->options['attributes_case']);
+			$root->attributes_ns = null;
+		}	
+	
 		if (isset($this->options['sort_attributes']) && $this->options['sort_attributes']) {
 			if ($this->options['sort_attributes'] === 'reverse') {
 				krsort($root->attributes);
 			} else {
 				ksort($root->attributes);
 			}
-		}
-		if (isset($this->options['attributes_case']) && $this->options['attributes_case']) {
-			$root->attributes = array_change_key_case($root->attributes, $this->options['attributes_case']);
-			$root->attributes_ns = null;
 		}
 
 		if ($root::NODE_TYPE === $root::NODE_ELEMENT) {
@@ -348,6 +349,8 @@ class HTML_Formatter {
 			$prev_tag = $n_tag;
 			$prev_asblock = $as_block;
 		}
+		
+		return true;
 	}
 
 	/**

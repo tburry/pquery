@@ -12,7 +12,7 @@
  * @param bool $return_root Return root node or return parser object
  * @return HTML_Parser_HTML5|HTML_Node
  */
-function str_get_html($str, $return_root = true) {
+function str_get_dom($str, $return_root = true) {
 	$a = new HTML_Parser_HTML5($str);
 	return (($return_root) ? $a->root : $a);
 }
@@ -23,9 +23,20 @@ function str_get_html($str, $return_root = true) {
  * @param bool $return_root Return root node or return parser object
  * @return HTML_Parser_HTML5|HTML_Node
  */
-function file_get_html($file, $return_root = true) {
+function file_get_dom($file, $return_root = true) {
 	$f = file_get_contents($file);
-	return (($f === false) ? false : str_get_html($f, $return_root));
+	return (($f === false) ? false : str_get_dom($f, $return_root));
+}
+
+/**
+ * Format/beautify DOM
+ * @param HTML_Node $root
+ * @param array $options Extra formatting options {@link HTML_Formatter::$options}
+ * @return bool
+ */
+function dom_format(&$root, $options = array()) {
+	$formatter = new HTML_Formatter($options);
+	return $formatter->format($root);
 }
 
 if (version_compare(PHP_VERSION, '5.0.0', '<')) {

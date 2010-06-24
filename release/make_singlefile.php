@@ -166,10 +166,7 @@ if (PHP4) {
 	$tpl = str_replace('##constants##', $s, $tpl);
 }
 
-$f = fopen($file_out, 'w') or die("Can't open file: $file_out");
-fwrite($f, $tpl);
-fclose($f);
-
+file_put_contents($file_out, $tpl) or die("Can't write file: $file_out"); 
 echo "Saved in $file_out.";
 
 ?>
