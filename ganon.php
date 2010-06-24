@@ -24,7 +24,8 @@ function str_get_html($str, $return_root = true) {
  * @return HTML_Parser_HTML5|HTML_Node
  */
 function file_get_html($file, $return_root = true) {
-	return str_get_html(file_get_contents($file), $return_root);
+	$f = file_get_contents($file);
+	return (($f === false) ? false : str_get_html($f, $return_root));
 }
 
 if (version_compare(PHP_VERSION, '5.0.0', '<')) {
