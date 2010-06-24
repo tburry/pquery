@@ -63,7 +63,7 @@ if (version_compare(PHP_VERSION, '5.2.0', '<')) {
 
 #!! <- Ignore when converting to single file
 if (!defined('GANON_NO_INCLUDES')) {
-	define('GANON_NO_INCLUDES');
+	define('GANON_NO_INCLUDES', true);
 	include_once('gan_tokenizer.php');
 	include_once('gan_parser_html.php');
 	include_once('gan_node_html.php');
