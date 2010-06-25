@@ -1226,10 +1226,10 @@ class HTML_Node {
 		$f = $this->findAttribute($attr, $compare, $case_sensitive);
 		if (is_array($f) && $f) {
 			foreach($f as $a) {
-				$this->attributes[$a[2]] = $val;
+				$this->attributes[$a[2]] = (string) $val;
 			}
 		} else {
-			$this->attributes[$attr] = $val;
+			$this->attributes[$attr] = (string) $val;
 		}
 	}
 
@@ -1744,7 +1744,7 @@ CALLBACK;
 	 * @access private
 	 */
 	protected function filter_root() {
-		return ($this->parent === null) || ($this->parent->parent === null);
+		return (strtolower($this->tag) === 'html');
 	}
 
 	/**
