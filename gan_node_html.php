@@ -6,7 +6,7 @@
  * @license http://dev.perl.org/licenses/artistic.html Artistic License
  */
 
- #!! <- Ignore when converting to single file
+#!! <- Ignore when converting to single file
 if (!defined('GANON_NO_INCLUDES')) {
 	include_once('gan_parser_html.php');
 	include_once('gan_selector_html.php');
@@ -206,7 +206,7 @@ class HTML_Node {
 	var $filter_map = array(
 		'root' => 'filter_root',
 		'nth-child' => 'filter_nchild',
-		'eg' => 'filter_nchild', //jquery (naming) compatibility
+		'eq' => 'filter_nchild', //jquery (naming) compatibility
 		'gt' => 'filter_gt',
 		'lt' => 'filter_lt',
 		'nth-last-child' => 'filter_nlastchild',
@@ -272,7 +272,7 @@ class HTML_Node {
 	 * @access private
 	 */
 	function __toString() {
-		return $this->tag;
+		return (($this->tag === '~root~') ? $this->getInnerText() : $this->tag);
 	}
 
 	/**
@@ -458,7 +458,7 @@ class HTML_Node {
 	 * @return string
 	 */
 	function getPlainText() {
-		return html_entity_decode($this->toString(true, true, true), ENT_QUOTES);
+		return preg_replace('`\s+`', ' ', html_entity_decode($this->toString(true, true, true), ENT_QUOTES));
 	}
 
 	/**
@@ -1446,6 +1446,7 @@ class HTML_Node {
 					$match['case_sensitive'] = false;
 				}
 			}
+			
 			if (is_string($match['value']) && (!$match['case_sensitive'])) {
 				$match['value'] = strtolower($match['value']);
 			}
@@ -1456,7 +1457,7 @@ class HTML_Node {
 				$possibles = $this->findAttribute($attribute, $match['compare'], $match['case_sensitive']);
 
 				$has = (is_array($possibles) && $possibles);
-				$res = ($match['value'] === $has);
+				$res = (($match['value'] === $has) || (($match['match'] === false) && ($has === $match['match'])));
 
 				if ((!$res) && $has && is_string($match['value'])) {
 					foreach($possibles as $a) {

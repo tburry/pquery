@@ -5,15 +5,6 @@
  * @link http://code.google.com/p/ganon/
  * @license http://dev.perl.org/licenses/artistic.html Artistic License
  */
- 
-/**
- * Compress all whitespace in string (to a single space)
- * @param string $text
- * @return string
- */
-function compress_whitespace($text) {
-	return preg_replace('`\s+`', ' ', $text);
-}
 
 /**
  * Indents text
@@ -173,7 +164,7 @@ class HTML_Formatter {
 			}
 		}
 		foreach($root->select('(!pre + !xmp + !style + !script + !"?php" + !"~text~" + !"~comment~"):not-empty > "~text~"', false, $recursive, true) as $c) {
-			$c->text = compress_whitespace($c->text);
+			$c->text = preg_replace('`\s+`', ' ', compress_whitespace($c->text));
 		}
 	}
 
