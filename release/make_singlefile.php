@@ -19,7 +19,7 @@ if (isset($_GET['v'])) {
 	$php4 = ($_GET['v'] == 4);
 	if ($php4) {
 		$file_tpl = 'ganon_tpl.php4';
-		$file_out = '../../tags/php4/ganon.php';
+		$file_out = '../../tags/php4/ganon.php4';
 	} else {
 		$file_tpl = 'ganon_tpl.php5';
 		$file_out = '../../tags/php5/ganon.php';
