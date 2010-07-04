@@ -164,7 +164,7 @@ class HTML_Formatter {
 			}
 		}
 		foreach($root->select('(!pre + !xmp + !style + !script + !"?php" + !"~text~" + !"~comment~"):not-empty > "~text~"', false, $recursive, true) as $c) {
-			$c->text = preg_replace('`\s+`', ' ', compress_whitespace($c->text));
+			$c->text = preg_replace('`\s+`', ' ', $c->text);
 		}
 	}
 

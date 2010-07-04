@@ -591,7 +591,27 @@ class HTML_Parser extends HTML_Parser_Base {
 		}
 
 		if ($self_close) {
-			if ($this->status['tag_name'][0] === '?') {
+			if ($this->status['closing_tag']) {
+			
+				$c = end($this->hierarchy)->children;
+				$found = false;
+				for ($count = count($c), $i = $count - 1; $i >= 0; $i--) {
+					if (strcasecmp($c[$i]->tag, $this->status['tag_name']) === 0) {
+						for($ii = $i + 1; $ii < $count; $ii++) {
+							$c[$i + 1]->changeParent($c[$i]);
+						}
+						$c[$i]->self_close = false;
+						
+						$found = true;
+						break;
+					}
+				}
+				
+				if (!$found) {
+					$this->addError('Closing tag "'.$this->status['tag_name'].'" which is not open');
+				}
+			
+			} elseif ($this->status['tag_name'][0] === '?') {
 				end($this->hierarchy)->addXML($this->status['tag_name'], '', $this->status['attributes']);
 			} elseif ($this->status['tag_name'][0] === '%') {
 				end($this->hierarchy)->addASP($this->status['tag_name'], '', $this->status['attributes']);
