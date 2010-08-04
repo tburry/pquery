@@ -12,6 +12,8 @@
  */
 
 include_once('../ganon.php');
+//PHP4 users, make sure this path is correct!
+
 $html = file_get_dom('http://code.google.com/p/ganon/w/list');
 
 
