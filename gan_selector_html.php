@@ -868,12 +868,12 @@ func;
 			return false;
 		}
 
-		foreach($tmp as &$t) {
-			$this->root = (($parent) ? $t->parent : $t);
+		foreach(array_keys($tmp) as $t) {
+			$this->root = (($parent) ? $tmp[$t]->parent : $tmp[$t]);
 			$this->parse_callback($c, $recursive);
-			foreach($this->result as &$r) {
-				if (!in_array($r, $tmp_res, true)) {
-					$tmp_res[] = $r;
+			foreach(array_keys($this->result) as $r) {
+				if (!in_array($this->result[$r], $tmp_res, true)) {
+					$tmp_res[] = $this->result[$r];
 				}
 			}
 		}

@@ -14,6 +14,19 @@
  * @license http://dev.perl.org/licenses/artistic.html Artistic License
  */
 
+if (!function_exists('file_put_contents')) {
+    function file_put_contents($filename, $data) {
+        $f = @fopen($filename, 'w');
+        if (!$f) {
+            return false;
+        } else {
+            $bytes = fwrite($f, $data);
+            fclose($f);
+            return $bytes;
+        }
+    }
+}
+ 
 if (isset($_GET['v'])) {
 
 	$php4 = ($_GET['v'] == 4);
