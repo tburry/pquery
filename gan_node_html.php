@@ -886,7 +886,7 @@ class HTML_Node {
 			foreach(array_keys($this->children) as $k) {
 				if (!$this->children[$k]->isTextOrComment()) {
 					if (++$count === $child) {
-						return $this->children[$k]
+						return $this->children[$k];
 					}
 					$last = $this->children[$k];
 				}
