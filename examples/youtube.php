@@ -13,7 +13,18 @@
 include_once('../ganon.php');
 $html = file_get_dom('http://www.youtube.com/videos');
 
-echo $html('a[href ^= "/watch"]:has(img)', 0)->toString();
+
+if (version_compare(PHP_VERSION, '5.3.0') >= 0) {
+	//PHP 5.3.0 and higher
+
+	echo $html('a[href ^= "/watch"]:has(img)', 0)->toString();
+
+} else {
+	//PHP 4 and 5.3.0 and lower
+
+	echo $html->select('a[href ^= "/watch"]:has(img)', 0)->toString();
+	
+}
 
 
 ?>

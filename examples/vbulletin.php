@@ -13,8 +13,21 @@
 include_once('../ganon.php');
 $html = file_get_dom('http://villavu.com/forum/');
 
-foreach($html('a[href ^= forumdisplay] > strong') as $element) {
-	echo $element->getPlainText(), "<br>\n";
+
+if (version_compare(PHP_VERSION, '5.3.0') >= 0) {
+	//PHP 5.3.0 and higher
+
+	foreach($html('a[href ^= forumdisplay] > strong') as $element) {
+		echo $element->getPlainText(), "<br>\n";
+	}
+
+} else {
+	//PHP 4 and 5.3.0 and lower
+
+	foreach($html->select('a[href ^= forumdisplay] > strong') as $element) {
+		echo $element->getPlainText(), "<br>\n";
+	}
+	
 }
 
 

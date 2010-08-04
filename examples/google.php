@@ -14,11 +14,27 @@
 include_once('../ganon.php');
 $html = file_get_dom('http://code.google.com/p/ganon/w/list');
 
-foreach($html('#resultstable tr[! id=headingrow]') as $row) {
-	foreach($row('td[class ^= "vt "]') as $col) {
-		echo $col->getPlainText(), ' [', $col, "] <br>\n";
+
+if (version_compare(PHP_VERSION, '5.3.0') >= 0) {
+	//PHP 5.3.0 and higher
+
+	foreach($html('#resultstable tr[! id=headingrow]') as $row) {
+		foreach($row('td[class ^= "vt "]') as $col) {
+			echo $col->getPlainText(), ' [', $col, "] <br>\n";
+		}
+		echo "<br>\n";
 	}
-	echo "<br>\n";
+
+} else {
+	//PHP 4 and 5.3.0 and lower
+
+	foreach($html->select('#resultstable tr[! id=headingrow]') as $row) {
+		foreach($row->select('td[class ^= "vt "]') as $col) {
+			echo $col->getPlainText(), ' [', $col, "] <br>\n";
+		}
+		echo "<br>\n";
+	}
+	
 }
  
 echo 'done';

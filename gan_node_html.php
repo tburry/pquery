@@ -560,6 +560,30 @@ class HTML_Node {
 	function isParent($tag, $recursive = false) {
 		return ($this->hasParent($tag, $recursive) === ($tag !== null));
 	}
+	
+	/**
+	 * Find out if node is text
+	 * @return bool
+	 */
+	function isText() {
+		return false;
+	}
+	
+	/**
+	 * Find out if node is comment
+	 * @return bool
+	 */
+	function isComment() {
+		return false;
+	}
+	
+	/**
+	 * Find out if node is text or comment node
+	 * @return bool
+	 */
+	function isTextOrComment() {
+		return false;
+	}
 
 	/**
 	 * Move node to other node
@@ -600,7 +624,7 @@ class HTML_Node {
 		} else{
 			$index = -1;
 			foreach($this->parent->children as &$c) {
-				if (($c::NODE_TYPE !== self::NODE_TEXT) && ($c::NODE_TYPE !== self::NODE_COMMENT)) {
+				if (!$c->isTextOrComment()) {
 					++$index;
 				}
 				if ($c === $this) {
@@ -778,7 +802,7 @@ class HTML_Node {
 		} else{
 			$count = 0;
 			foreach($this->children as &$c) {
-				if (($c::NODE_TYPE !== self::NODE_TEXT) && ($c::NODE_TYPE !== self::NODE_COMMENT)) {
+				if (!$c->isTextOrComment()) {
 					++$count;
 				}
 			}
@@ -821,7 +845,7 @@ class HTML_Node {
 			$count = 0;
 			$last = null;
 			foreach($this->children as $i => &$c) {
-				if (($c::NODE_TYPE !== self::NODE_TEXT) && ($c::NODE_TYPE !== self::NODE_COMMENT)) {
+				if (!$c->isTextOrComment()) {
 					if (++$count === $child) {
 						return $c;
 					}
@@ -2021,7 +2045,7 @@ CALLBACK;
 	 * @access private
 	 */
 	protected function filter_element() {
-		return ($this::NODE_TYPE === self::NODE_ELEMENT);
+		return true;
 	}
 
 	/**
@@ -2031,7 +2055,7 @@ CALLBACK;
 	 * @access private
 	 */
 	protected function filter_text() {
-		return ($this::NODE_TYPE === self::NODE_TEXT);
+		return false;
 	}
 
 	/**
@@ -2041,7 +2065,7 @@ CALLBACK;
 	 * @access private
 	 */
 	protected function filter_comment() {
-		return ($this::NODE_TYPE === self::NODE_COMMENT);
+		return false;
 	}
 }
 
@@ -2075,7 +2099,11 @@ class HTML_NODE_TEXT extends HTML_Node {
 	#php4 PHP4 class constructor compatibility
 	#function HTML_NODE_TEXT($parent, $text = '') {return $this->__construct($parent, $text);}
 	#php4e
-
+	
+	function isText() {return true;}
+	function isTextOrComment() {return true;}
+	protected function filter_element() {return false;}
+	protected function filter_text() {return true;}
 	function toString_attributes() {return '';}
 	function toString_content() {return $this->text;}
 	function toString() {return $this->text;}
@@ -2111,7 +2139,11 @@ class HTML_NODE_COMMENT extends HTML_Node {
 	#php4 PHP4 class constructor compatibility
 	#function HTML_NODE_COMMENT($parent, $text = '') {return $this->__construct($parent, $text);}
 	#php4e
-
+	
+	function isComment() {return true;}
+	function isTextOrComment() {return true;}	
+	protected function filter_element() {return false;}
+	protected function filter_comment() {return true;}
 	function toString_attributes() {return '';}
 	function toString_content() {return $this->text;}
 	function toString() {return '<!--'.$this->text.'-->';}
@@ -2149,7 +2181,8 @@ class HTML_NODE_CONDITIONAL extends HTML_Node {
 	#php4 PHP4 class constructor compatibility
 	#function HTML_NODE_CONDITIONAL($parent, $condition = '', $hidden = true) {return $this->__construct($parent, $condition, $hidden);}
 	#php4e
-
+	
+	protected function filter_element() {return false;}
 	function toString_attributes() {return '';}
 	function toString($attributes = true, $recursive = true, $content_only = false) {
 		if ($content_only) {
@@ -2198,7 +2231,8 @@ class HTML_NODE_CDATA extends HTML_Node {
 	#php4 PHP4 class constructor compatibility
 	#function HTML_NODE_CDATA($parent, $text = '') {return $this->__construct($parent, $text);}
 	#php4e
-
+	
+	protected function filter_element() {return false;}
 	function toString_attributes() {return '';}
 	function toString_content() {return $this->text;}
 	function toString() {return '<![CDATA['.$this->text.']]>';}
@@ -2235,6 +2269,7 @@ class HTML_NODE_DOCTYPE extends HTML_Node {
 	#function HTML_NODE_DOCTYPE($parent, $dtd = '') {return $this->__construct($parent, $dtd);}
 	#php4e
 
+	protected function filter_element() {return false;}
 	function toString_attributes() {return '';}
 	function toString_content() {return $this->text;}
 	function toString() {return '<'.$this->tag.' '.$this->dtd.'>';}
@@ -2281,6 +2316,7 @@ class HTML_NODE_EMBEDDED extends HTML_Node {
 	#function HTML_NODE_EMBEDDED($parent, $tag_char = '', $tag = '', $text = '', $attributes = array()) {return $this->__construct($parent, $tag_char, $tag, $text, $attributes);}
 	#php4e
 
+	protected function filter_element() {return false;}
 	function toString($attributes = true, $recursive = true, $content_only = false) {
 		$s = '<'.$this->tag;
 		if ($attributes) {

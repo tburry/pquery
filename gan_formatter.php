@@ -157,7 +157,7 @@ class HTML_Formatter {
 				$prev = $c->getSibling(-1);
 				$next = $c->getSibling(1);
 				$c->delete();
-				if ($prev && $next && ($prev::NODE_TYPE === $root::NODE_TEXT) && ($next::NODE_TYPE === $root::NODE_TEXT)) {
+				if ($prev && $next && ($prev->isText()) && ($next->isText())) {
 					$prev->text .= $next->text;
 					$next->delete();
 				}
@@ -251,7 +251,7 @@ class HTML_Formatter {
 			}
 		}
 
-		if ($root::NODE_TYPE === $root::NODE_ELEMENT) {
+		if ($root->filter_element()) {
 			$root->setTag(strtolower($root->tag), true);
 			if (($this->options['img_alt'] !== null) && ($root_tag === 'img') && (!isset($root->alt))) {
 				$root->alt = $this->options['img_alt'];
@@ -273,20 +273,20 @@ class HTML_Formatter {
 			$n =& $root->children[$i];
 			$indent = $n->indent();
 
-			if ($n::NODE_TYPE !== $root::NODE_TEXT) {
+			if (!$n->isText()) {
 				$n_tag = strtolower($n->tag);
 				$new_line = isset($this->block_elements[$n_tag]) && $this->block_elements[$n_tag]['new_line'];
 				$as_block = isset($this->block_elements[$n_tag]) && $this->block_elements[$n_tag]['as_block'];
 				$format_inside = ((!isset($this->block_elements[$n_tag])) || $this->block_elements[$n_tag]['format_inside']);
 
-				if ($prev && ($prev::NODE_TYPE === $root::NODE_TEXT) && $prev->text && ($char = $prev->text[strlen($prev->text) - 1]) && isset($this->whitespace[$char])) {
+				if ($prev && ($prev->isText()) && $prev->text && ($char = $prev->text[strlen($prev->text) - 1]) && isset($this->whitespace[$char])) {
 					if ($this->whitespace[$char]) {
 						$prev->text .= str_repeat($this->indent_string, $indent);
 					} else {
 						$prev->text = substr_replace($prev->text, $this->linebreak_string.str_repeat($this->indent_string, $indent), -1, 1);
 					}
 				} elseif (($new_line || $prev_asblock || ($in_block && ($i === 0)))){
-					if ($prev && ($prev::NODE_TYPE === $root::NODE_TEXT)) {
+					if ($prev && ($prev->isText())) {
 						$prev->text .= $this->linebreak_string.str_repeat($this->indent_string, $indent);
 					} else {
 						$root->addText($this->linebreak_string.str_repeat($this->indent_string, $indent), $i);
@@ -300,7 +300,7 @@ class HTML_Formatter {
 					$last_asblock = ($last_tag && isset($this->block_elements[$last_tag]) && $this->block_elements[$last_tag]['as_block']);
 
 					if (($n->childCount(true) > 0) || (trim($n->getPlainText()))) {
-						if ($last && ($last::NODE_TYPE === $root::NODE_TEXT) && $last->text && ($char = $last->text[strlen($last->text) - 1]) && isset($this->whitespace[$char])) {
+						if ($last && ($last->isText()) && $last->text && ($char = $last->text[strlen($last->text) - 1]) && isset($this->whitespace[$char])) {
 							if ($as_block || ($last->index() > 0) || isset($this->whitespace[$last->text[0]])) {
 								if ($this->whitespace[$char]) {
 									$last->text .= str_repeat($this->indent_string, $indent);
@@ -309,7 +309,7 @@ class HTML_Formatter {
 								}
 							}
 						} elseif (($as_block || $last_asblock || ($in_block && ($i === 0))) && $last) {
-							if ($last && ($last::NODE_TYPE === $root::NODE_TEXT)) {
+							if ($last && ($last->isText())) {
 								$last->text .= $this->linebreak_string.str_repeat($this->indent_string, $indent);
 							} else {
 								$n->addText($this->linebreak_string.str_repeat($this->indent_string, $indent));

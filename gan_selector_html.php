@@ -405,9 +405,9 @@ class HTML_Selector {
 		$p =& $this->parser;
 		$tok = $p->token;
 
-		if ($tok === $p::TOK_IDENTIFIER) {
+		if ($tok === Tokenizer_CSSQuery::TOK_IDENTIFIER) {
 			return $p->getTokenString();
-		} elseif($tok === $p::TOK_STRING) {
+		} elseif($tok === Tokenizer_CSSQuery::TOK_STRING) {
 			return str_replace(array('\\\'', '\\"', '\\\\'), array('\'', '"', '\\'), $p->getTokenString(1, -1));
 		} elseif ($do_error) {
 			$this->error('Expected identifier at %pos%!');
@@ -425,19 +425,19 @@ class HTML_Selector {
 		$p =& $this->parser;
 		$tok = $p->token;
 
-		if ($tok === $p::TOK_NULL) {
+		if ($tok === Tokenizer_CSSQuery::TOK_NULL) {
 			$this->error('Invalid search pattern(1): Empty string!');
 			return false;
 		}
 		$conditions_all = array();
 
 		//Tags
-		while ($tok !== $p::TOK_NULL) {
+		while ($tok !== Tokenizer_CSSQuery::TOK_NULL) {
 			$conditions = array('tags' => array(), 'attributes' => array());
 
-			if ($tok === $p::TOK_ALL) {
+			if ($tok === Tokenizer_CSSQuery::TOK_ALL) {
 				$tok = $p->next();
-				if (($tok === $p::TOK_PIPE) && ($tok = $p->next()) && ($tok !== $p::TOK_ALL)) {
+				if (($tok === Tokenizer_CSSQuery::TOK_PIPE) && ($tok = $p->next()) && ($tok !== Tokenizer_CSSQuery::TOK_ALL)) {
 					if (($tag = $this->parse_getIdentifier()) === false) {
 						return false;
 					}
@@ -451,13 +451,13 @@ class HTML_Selector {
 						'tag' => '',
 						'match' => false
 					);
-					if ($tok === $p::TOK_ALL) {
+					if ($tok === Tokenizer_CSSQuery::TOK_ALL) {
 						$tok = $p->next_no_whitespace();
 					}
 				}
-			} elseif ($tok === $p::TOK_PIPE) {
+			} elseif ($tok === Tokenizer_CSSQuery::TOK_PIPE) {
 				$tok = $p->next();
-				if ($tok === $p::TOK_ALL) {
+				if ($tok === Tokenizer_CSSQuery::TOK_ALL) {
 					$conditions['tags'][] = array(
 						'tag' => '',
 						'compare' => 'namespace',
@@ -471,7 +471,7 @@ class HTML_Selector {
 					return false;
 				}
 				$tok = $p->next_no_whitespace();
-			} elseif ($tok === $p::TOK_BRACE_OPEN) {
+			} elseif ($tok === Tokenizer_CSSQuery::TOK_BRACE_OPEN) {
 				$tok = $p->next_no_whitespace();
 				$last_mode = 'or';
 
@@ -479,23 +479,23 @@ class HTML_Selector {
 					$match = true;
 					$compare = 'total';
 
-					if ($tok === $p::TOK_NOT) {
+					if ($tok === Tokenizer_CSSQuery::TOK_NOT) {
 						$match = false;
 						$tok = $p->next_no_whitespace();
 					}
 
-					if ($tok === $p::TOK_ALL) {
+					if ($tok === Tokenizer_CSSQuery::TOK_ALL) {
 						$tok = $p->next();
-						if ($tok === $p::TOK_PIPE) {
+						if ($tok === Tokenizer_CSSQuery::TOK_PIPE) {
 							$this->next();
 							$compare = 'name';
 							if (($tag = $this->parse_getIdentifier()) === false) {
 								return false;
 							}
 						}
-					} elseif ($tok === $p::TOK_PIPE) {
+					} elseif ($tok === Tokenizer_CSSQuery::TOK_PIPE) {
 						$tok = $p->next();
-						if ($tok === $p::TOK_ALL) {
+						if ($tok === Tokenizer_CSSQuery::TOK_ALL) {
 							$tag = '';
 							$compare = 'namespace';
 						} elseif (($tag = $this->parse_getIdentifier()) === false) {
@@ -507,10 +507,10 @@ class HTML_Selector {
 							return false;
 						}
 						$tok = $p->next();
-						if ($tok === $p::TOK_PIPE) {
+						if ($tok === Tokenizer_CSSQuery::TOK_PIPE) {
 							$tok = $p->next();
 
-							if ($tok === $p::TOK_ALL) {
+							if ($tok === Tokenizer_CSSQuery::TOK_ALL) {
 								$compare = 'namespace';
 							} elseif (($tag_name = $this->parse_getIdentifier()) !== false) {
 								$tag = $tag.':'.$tag_name;
@@ -521,7 +521,7 @@ class HTML_Selector {
 							$tok = $p->next_no_whitespace();
 						}
 					}
-					if ($tok === $p::TOK_WHITESPACE) {
+					if ($tok === Tokenizer_CSSQuery::TOK_WHITESPACE) {
 						$tok = $p->next_no_whitespace();
 					}
 
@@ -532,15 +532,15 @@ class HTML_Selector {
 						'compare' => $compare
 					);
 					switch($tok) {
-						case $p::TOK_COMMA:
+						case Tokenizer_CSSQuery::TOK_COMMA:
 							$tok = $p->next_no_whitespace();
 							$last_mode = 'or';
 							continue 2;
-						case $p::TOK_PLUS:
+						case Tokenizer_CSSQuery::TOK_PLUS:
 							$tok = $p->next_no_whitespace();
 							$last_mode = 'and';
 							continue 2;
-						case $p::TOK_BRACE_CLOSE:
+						case Tokenizer_CSSQuery::TOK_BRACE_CLOSE:
 							$tok = $p->next();
 							break 2;
 						default:
@@ -550,10 +550,10 @@ class HTML_Selector {
 				}
 			} elseif (($tag = $this->parse_getIdentifier(false)) !== false) {
 				$tok = $p->next();
-				if ($tok === $p::TOK_PIPE) {
+				if ($tok === Tokenizer_CSSQuery::TOK_PIPE) {
 					$tok = $p->next();
 
-					if ($tok === $p::TOK_ALL) {
+					if ($tok === Tokenizer_CSSQuery::TOK_ALL) {
 						$conditions['tags'][] = array(
 							'tag' => $tag,
 							'compare' => 'namespace'
@@ -581,7 +581,7 @@ class HTML_Selector {
 
 			//Class
 			$last_mode = 'or';
-			if ($tok === $p::TOK_CLASS) {
+			if ($tok === Tokenizer_CSSQuery::TOK_CLASS) {
 				$p->next();
 				if (($class = $this->parse_getIdentifier()) === false) {
 					return false;
@@ -598,7 +598,7 @@ class HTML_Selector {
 			}
 
 			//ID
-			if ($tok === $p::TOK_ID) {
+			if ($tok === Tokenizer_CSSQuery::TOK_ID) {
 				$p->next();
 				if (($id = $this->parse_getIdentifier()) === false) {
 					return false;
@@ -615,20 +615,20 @@ class HTML_Selector {
 			}
 
 			//Attributes
-			if ($tok === $p::TOK_BRACKET_OPEN) {
+			if ($tok === Tokenizer_CSSQuery::TOK_BRACKET_OPEN) {
 				$tok = $p->next_no_whitespace();
 
 				while (true) {
 					$match = true;
 					$compare = 'total';
-					if ($tok === $p::TOK_NOT) {
+					if ($tok === Tokenizer_CSSQuery::TOK_NOT) {
 						$match = false;
 						$tok = $p->next_no_whitespace();
 					}
 
-					if ($tok === $p::TOK_ALL) {
+					if ($tok === Tokenizer_CSSQuery::TOK_ALL) {
 						$tok = $p->next();
-						if ($tok === $p::TOK_PIPE) {
+						if ($tok === Tokenizer_CSSQuery::TOK_PIPE) {
 							$tok = $p->next();
 							if (($attribute = $this->parse_getIdentifier()) === false) {
 								return false;
@@ -639,7 +639,7 @@ class HTML_Selector {
 							$this->error('Expected pipe at pos %pos%!');
 							return false;
 						}
-					} elseif ($tok === $p::TOK_PIPE) {
+					} elseif ($tok === Tokenizer_CSSQuery::TOK_PIPE) {
 						$tok = $p->next();
 						if (($tag = $this->parse_getIdentifier()) === false) {
 							return false;
@@ -647,7 +647,7 @@ class HTML_Selector {
 						$tok = $p->next_no_whitespace();
 					} elseif (($attribute = $this->parse_getIdentifier()) !== false) {
 						$tok = $p->next();
-						if ($tok === $p::TOK_PIPE) {
+						if ($tok === Tokenizer_CSSQuery::TOK_PIPE) {
 							$tok = $p->next();
 
 							if (($attribute_name = $this->parse_getIdentifier()) !== false) {
@@ -661,24 +661,24 @@ class HTML_Selector {
 					} else {
 						return false;
 					}
-					if ($tok === $p::TOK_WHITESPACE) {
+					if ($tok === Tokenizer_CSSQuery::TOK_WHITESPACE) {
 						$tok = $p->next_no_whitespace();
 					}
 
 					$operator_value = '';
 					$val = '';
 					switch($tok) {
-						case $p::TOK_COMPARE_PREFIX:
-						case $p::TOK_COMPARE_CONTAINS:
-						case $p::TOK_COMPARE_CONTAINS_WORD:
-						case $p::TOK_COMPARE_ENDS:
-						case $p::TOK_COMPARE_EQUALS:
-						case $p::TOK_COMPARE_NOT_EQUAL:
-						case $p::TOK_COMPARE_REGEX:
-						case $p::TOK_COMPARE_STARTS:
-						case $p::TOK_COMPARE_BIGGER_THAN:
-						case $p::TOK_COMPARE_SMALLER_THAN:
-							$operator_value = $p->getTokenString(($tok === $p::TOK_COMPARE_EQUALS) ? 0 : -1);
+						case Tokenizer_CSSQuery::TOK_COMPARE_PREFIX:
+						case Tokenizer_CSSQuery::TOK_COMPARE_CONTAINS:
+						case Tokenizer_CSSQuery::TOK_COMPARE_CONTAINS_WORD:
+						case Tokenizer_CSSQuery::TOK_COMPARE_ENDS:
+						case Tokenizer_CSSQuery::TOK_COMPARE_EQUALS:
+						case Tokenizer_CSSQuery::TOK_COMPARE_NOT_EQUAL:
+						case Tokenizer_CSSQuery::TOK_COMPARE_REGEX:
+						case Tokenizer_CSSQuery::TOK_COMPARE_STARTS:
+						case Tokenizer_CSSQuery::TOK_COMPARE_BIGGER_THAN:
+						case Tokenizer_CSSQuery::TOK_COMPARE_SMALLER_THAN:
+							$operator_value = $p->getTokenString(($tok === Tokenizer_CSSQuery::TOK_COMPARE_EQUALS) ? 0 : -1);
 							$p->next_no_whitespace();
 
 							if (($val = $this->parse_getIdentifier()) === false) {
@@ -708,15 +708,15 @@ class HTML_Selector {
 					}
 
 					switch($tok) {
-						case $p::TOK_COMMA:
+						case Tokenizer_CSSQuery::TOK_COMMA:
 							$tok = $p->next_no_whitespace();
 							$last_mode = 'or';
 							continue 2;
-						case $p::TOK_PLUS:
+						case Tokenizer_CSSQuery::TOK_PLUS:
 							$tok = $p->next_no_whitespace();
 							$last_mode = 'and';
 							continue 2;
-						case $p::TOK_BRACKET_CLOSE:
+						case Tokenizer_CSSQuery::TOK_BRACKET_CLOSE:
 							$tok = $p->next();
 							break 2;
 						default:
@@ -730,7 +730,7 @@ class HTML_Selector {
 				unset($conditions['attributes']);
 			}
 
-			while($tok === $p::TOK_COLON) {
+			while($tok === Tokenizer_CSSQuery::TOK_COLON) {
 				if (count($conditions) < 1) {
 					$conditions['tags'] = array(array(
 						'tag' => '',
@@ -743,17 +743,17 @@ class HTML_Selector {
 					return false;
 				}
 
-				if (($tok = $p->next()) === $p::TOK_BRACE_OPEN) {
+				if (($tok = $p->next()) === Tokenizer_CSSQuery::TOK_BRACE_OPEN) {
 					$start = $p->pos;
 					$count = 1;
-					while ((($tok = $p->next()) !== $p::TOK_NULL) && !(($tok === $p::TOK_BRACE_CLOSE) && (--$count === 0))) {
-						if ($tok === $p::TOK_BRACE_OPEN) {
+					while ((($tok = $p->next()) !== Tokenizer_CSSQuery::TOK_NULL) && !(($tok === Tokenizer_CSSQuery::TOK_BRACE_CLOSE) && (--$count === 0))) {
+						if ($tok === Tokenizer_CSSQuery::TOK_BRACE_OPEN) {
 							++$count;
 						}
 					}
 
 
-					if ($tok !== $p::TOK_BRACE_CLOSE) {
+					if ($tok !== Tokenizer_CSSQuery::TOK_BRACE_CLOSE) {
 						$this->error('Expected closing brace at pos %pos%!');
 						return false;
 					}
@@ -772,11 +772,11 @@ class HTML_Selector {
 			}
 			$conditions_all[] = $conditions;
 
-			if ($tok === $p::TOK_WHITESPACE) {
+			if ($tok === Tokenizer_CSSQuery::TOK_WHITESPACE) {
 				$tok = $p->next_no_whitespace();
 			}
 
-			if ($tok === $p::TOK_COMMA) {
+			if ($tok === Tokenizer_CSSQuery::TOK_COMMA) {
 				$tok = $p->next_no_whitespace();
 				continue;
 			} else {
@@ -898,41 +898,41 @@ func;
 
 		while (count($this->result) > 0) {
 			switch($p->token) {
-				case $p::TOK_CHILD:
+				case Tokenizer_CSSQuery::TOK_CHILD:
 					$this->parser->next_no_whitespace();
 					if (!$this->parse_result(false, 1)) {
 						return false;
 					}
 					break;
 
-				case $p::TOK_SIBLING:
+				case Tokenizer_CSSQuery::TOK_SIBLING:
 					$this->parser->next_no_whitespace();
 					if (!$this->parse_result(true, 1)) {
 						return false;
 					}
 					break;
 
-				case $p::TOK_PLUS:
+				case Tokenizer_CSSQuery::TOK_PLUS:
 					$this->parser->next_no_whitespace();
 					if (!$this->parse_adjacent()) {
 						return false;
 					}
 					break;
 
-				case $p::TOK_ALL:
-				case $p::TOK_IDENTIFIER:
-				case $p::TOK_STRING:
-				case $p::TOK_BRACE_OPEN:
-				case $p::TOK_BRACKET_OPEN:
-				case $p::TOK_ID:
-				case $p::TOK_CLASS:
-				case $p::TOK_COLON:
+				case Tokenizer_CSSQuery::TOK_ALL:
+				case Tokenizer_CSSQuery::TOK_IDENTIFIER:
+				case Tokenizer_CSSQuery::TOK_STRING:
+				case Tokenizer_CSSQuery::TOK_BRACE_OPEN:
+				case Tokenizer_CSSQuery::TOK_BRACKET_OPEN:
+				case Tokenizer_CSSQuery::TOK_ID:
+				case Tokenizer_CSSQuery::TOK_CLASS:
+				case Tokenizer_CSSQuery::TOK_COLON:
 					if (!$this->parse_result()) {
 						return false;
 					}
 					break;
 
-				case $p::TOK_NULL:
+				case Tokenizer_CSSQuery::TOK_NULL:
 					break 2;
 
 				default:
