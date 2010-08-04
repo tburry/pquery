@@ -29,7 +29,7 @@ if (isset($_GET['v'])) {
 	$statics = array();
 
 	function parse_file($file) {
-		global $constants, $statics;
+		global $constants, $statics, $php4, $file_tpl, $file_out;
 		
 		$source = file_get_contents($file) or die("Can't open file: $file");
 		$tokens = token_get_all($source);
