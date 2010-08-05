@@ -177,6 +177,10 @@ class HTML_Formatter {
 	 * @return bool|array Array of errors on failure, true on succes
 	 */
 	static function minify_javascript(&$root, $indent_string = ' ', $wrap_comment = true, $recursive = true) {
+	#php4 JSMin+ doesn't support PHP4
+	#return true;
+	#php4e
+	#php5
 		include_once('third party/jsminplus.php');
 
 		$errors = array();
@@ -218,6 +222,7 @@ class HTML_Formatter {
 		}
 
 		return (($errors) ? $errors : true);
+	#php5e
 	}
 
 	/**

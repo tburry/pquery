@@ -521,14 +521,19 @@ class HTML_Node {
 	/**
 	 * Change parent
 	 * @param HTML_Node $to New parent, null if none
-	 * @param int $index Add child to parent if not present at index, null to not add, negative to cound from end
+	 * @param int $index Add child to parent if not present at index, false to not add, negative to cound from end, null to append
 	 */
-	function changeParent($to, &$index = -1) {
+	#php4
+	#function changeParent($to, &$index) {
+	#php4e
+	#php5
+	function changeParent($to, &$index = null) {
+	#php5e
 		if ($this->parent !== null) {
 			$this->parent->deleteChild($this, true);
 		}
 		$this->parent = $to;
-		if ($index !== null) {
+		if ($index !== false) {
 			$new_index = $this->index();
 			if (!(is_int($new_index) && ($new_index >= 0))) {
 				$this->parent->addChild($this, $index);
@@ -597,7 +602,12 @@ class HTML_Node {
 	 * @param int $new_index Add child to parent at index if not present, null to not add, negative to cound from end
 	 * @internal Performs {@link changeParent()}
 	 */
+	#php4
+	#function move($to, &$new_index) {
+	#php4e
+	#php5
 	function move($to, &$new_index = -1) {
+	#php5e
 		$this->changeParent($to, $new_index);
 	}
 
@@ -608,7 +618,12 @@ class HTML_Node {
 	 * @param int $start Index from child node where to start wrapping, 0 for first element
 	 * @param int $end Index from child node where to end wrapping, -1 for last element
 	 */
+	#php4
+	#function moveChildren($to, &$new_index, $start = 0, $end = -1) {
+	#php4e
+	#php5
 	function moveChildren($to, &$new_index = -1, $start = 0, $end = -1) {
+	#php5e
 		if ($end < 0) {
 			$end += count($this->children);
 		}
@@ -903,11 +918,17 @@ class HTML_Node {
 	 * @param int $offset Position to insert node, negative to count from end, null to append
 	 * @return HTML_Node Added node
 	 */
+	#php4
+	#function &addChild($tag, &$offset) {
+	#php4e
+	#php5
 	function &addChild($tag, &$offset = null) {
+	#php5e
 		if (!is_object($tag)) {
 			$tag = new $this->childClass($tag, $this);
 		} elseif ($tag->parent !== $this) {
-			$tag->changeParent($this, false);
+			$index = false; //Needs to be passed by ref
+			$tag->changeParent($this, $index);
 		}
 
 		if (is_int($offset) && ($offset < count($this->children)) && ($offset !== -1)) {
@@ -958,7 +979,12 @@ class HTML_Node {
 	 * @return HTML_Node Added node
 	 * @see addChild();
 	 */
+	#php4
+	#function &addText($text, &$offset) {
+	#php4e
+	#php5
 	function &addText($text, &$offset = null) {
+	#php5e
 		return $this->addChild(new $this->childClass_Text($this, $text), $offset);
 	}
 
@@ -969,7 +995,12 @@ class HTML_Node {
 	 * @return HTML_Node Added node
 	 * @see addChild();
 	 */
+	#php4
+	#function &addComment($text, &$offset) {
+	#php4e
+	#php5
 	function &addComment($text, &$offset = null) {
+	#php5e
 		return $this->addChild(new $this->childClass_Comment($this, $text), $offset);
 	}
 
@@ -981,7 +1012,12 @@ class HTML_Node {
 	 * @return HTML_Node Added node
 	 * @see addChild();
 	 */
+	#php4
+	#function &addConditional($condition, $hidden = true, &$offset) {
+	#php4e
+	#php5
 	function &addConditional($condition, $hidden = true, &$offset = null) {
+	#php5e
 		return $this->addChild(new $this->childClass_Conditional($this, $condition, $hidden), $offset);
 	}
 
@@ -992,7 +1028,12 @@ class HTML_Node {
 	 * @return HTML_Node Added node
 	 * @see addChild();
 	 */
+	#php4
+	#function &addCDATA($text, &$offset) {
+	#php4e
+	#php5
 	function &addCDATA($text, &$offset = null) {
+	#php5e
 		return $this->addChild(new $this->childClass_CDATA($this, $text), $offset);
 	}
 
@@ -1003,7 +1044,12 @@ class HTML_Node {
 	 * @return HTML_Node Added node
 	 * @see addChild();
 	 */
+	#php4
+	#function &addDoctype($dtd, &$offset) {
+	#php4e
+	#php5
 	function &addDoctype($dtd, &$offset = null) {
+	#php5e
 		return $this->addChild(new $this->childClass_Doctype($this, $dtd), $offset);
 	}
 
@@ -1016,7 +1062,12 @@ class HTML_Node {
 	 * @return HTML_Node Added node
 	 * @see addChild();
 	 */
+	#php4
+	#function &addXML($tag = 'xml', $text = '', $attributes = array(), &$offset) {
+	#php4e
+	#php5
 	function &addXML($tag = 'xml', $text = '', $attributes = array(), &$offset = null) {
+	#php5e
 		return $this->addChild(new $this->childClass_XML($this, $tag, $text, $attributes), $offset);
 	}
 
@@ -1029,7 +1080,12 @@ class HTML_Node {
 	 * @return HTML_Node Added node
 	 * @see addChild();
 	 */
+	#php4
+	#function &addASP($tag = '', $text = '', $attributes = array(), &$offset) {
+	#php4e
+	#php5
 	function &addASP($tag = '', $text = '', $attributes = array(), &$offset = null) {
+	#php5e
 		return $this->addChild(new $this->childClass_ASP($this, $tag, $text, $attributes), $offset);
 	}
 

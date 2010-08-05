@@ -599,7 +599,8 @@ class HTML_Parser extends HTML_Parser_Base {
 				for ($count = count($c), $i = $count - 1; $i >= 0; $i--) {
 					if (strcasecmp($c[$i]->tag, $this->status['tag_name']) === 0) {
 						for($ii = $i + 1; $ii < $count; $ii++) {
-							$c[$i + 1]->changeParent($c[$i]);
+							$index = null; //Needs to be passed by ref
+							$c[$i + 1]->changeParent($c[$i], $index);
 						}
 						$c[$i]->self_close = false;
 						
@@ -614,13 +615,16 @@ class HTML_Parser extends HTML_Parser_Base {
 			
 			} elseif ($this->status['tag_name'][0] === '?') {
 				//end($this->hierarchy)->addXML($this->status['tag_name'], '', $this->status['attributes']);
-				$this->hierarchy[count($this->hierarchy) - 1]->addXML($this->status['tag_name'], '', $this->status['attributes']);
+				$index = null; //Needs to be passed by ref
+				$this->hierarchy[count($this->hierarchy) - 1]->addXML($this->status['tag_name'], '', $this->status['attributes'], $index);
 			} elseif ($this->status['tag_name'][0] === '%') {
 				//end($this->hierarchy)->addASP($this->status['tag_name'], '', $this->status['attributes']);
-				$this->hierarchy[count($this->hierarchy) - 1]->addASP($this->status['tag_name'], '', $this->status['attributes']);
+				$index = null; //Needs to be passed by ref
+				$this->hierarchy[count($this->hierarchy) - 1]->addASP($this->status['tag_name'], '', $this->status['attributes'], $index);
 			} else {
 				//end($this->hierarchy)->addChild($this->status);
-				$this->hierarchy[count($this->hierarchy) - 1]->addChild($this->status);;
+				$index = null; //Needs to be passed by ref
+				$this->hierarchy[count($this->hierarchy) - 1]->addChild($this->status, $index);
 			}
 		} elseif ($this->status['closing_tag']) {
 			$found = false;
@@ -645,7 +649,8 @@ class HTML_Parser extends HTML_Parser_Base {
 
 		} else {
 			//$this->hierarchy[] = end($this->hierarchy)->addChild($this->status);
-			$this->hierarchy[] = $this->hierarchy[count($this->hierarchy) - 1]->addChild($this->status);	
+			$index = null; //Needs to be passed by ref
+			$this->hierarchy[] = $this->hierarchy[count($this->hierarchy) - 1]->addChild($this->status, $index);	
 		}
 	}
 
@@ -653,7 +658,8 @@ class HTML_Parser extends HTML_Parser_Base {
 		if (!parent::parse_cdata()) {return false;}
 
 		//end($this->hierarchy)->addCDATA($this->status['cdata']);
-		$this->hierarchy[count($this->hierarchy) - 1]->addCDATA($this->status['cdata']);
+		$index = null; //Needs to be passed by ref
+		$this->hierarchy[count($this->hierarchy) - 1]->addCDATA($this->status['cdata'], $index);
 		return true;
 	}
 
@@ -661,7 +667,8 @@ class HTML_Parser extends HTML_Parser_Base {
 		if (!parent::parse_comment()) {return false;}
 
 		//end($this->hierarchy)->addComment($this->status['comment']);
-		$this->hierarchy[count($this->hierarchy) - 1]->addComment($this->status['comment']);
+		$index = null; //Needs to be passed by ref
+		$this->hierarchy[count($this->hierarchy) - 1]->addComment($this->status['comment'], $index);
 		return true;
 	}
 
@@ -670,16 +677,19 @@ class HTML_Parser extends HTML_Parser_Base {
 
 		if ($this->status['comment']) {
 			//$e = end($this->hierarchy)->addConditional($this->status['tag_condition'], true);
-			$e = $this->hierarchy[count($this->hierarchy) - 1]->addConditional($this->status['tag_condition'], true);
+			$index = null; //Needs to be passed by ref
+			$e = $this->hierarchy[count($this->hierarchy) - 1]->addConditional($this->status['tag_condition'], true, $index);
 			if ($this->status['text']) {
-				$e->addText($this->status['text']);
+				$index = null; //Needs to be passed by ref
+				$e->addText($this->status['text'], $index);
 			}
 		} else {
 			if ($this->status['closing_tag']) {
 				$this->parse_hierarchy(false);
 			} else {
 				//$this->hierarchy[] = end($this->hierarchy)->addConditional($this->status['tag_condition'], false);
-				$this->hierarchy[] = $this->hierarchy[count($this->hierarchy) - 1]->addConditional($this->status['tag_condition'], false);
+				$index = null; //Needs to be passed by ref
+				$this->hierarchy[] = $this->hierarchy[count($this->hierarchy) - 1]->addConditional($this->status['tag_condition'], false, $index);
 			}
 		}
 
@@ -690,7 +700,8 @@ class HTML_Parser extends HTML_Parser_Base {
 		if (!parent::parse_doctype()) {return false;}
 
 		//end($this->hierarchy)->addDoctype($this->status['dtd']);
-		$this->hierarchy[count($this->hierarchy) - 1]->addDoctype($this->status['dtd']);
+		$index = null; //Needs to be passed by ref
+		$this->hierarchy[count($this->hierarchy) - 1]->addDoctype($this->status['dtd'], $index);
 		return true;
 	}
 
@@ -698,7 +709,8 @@ class HTML_Parser extends HTML_Parser_Base {
 		if (!parent::parse_php()) {return false;}
 
 		//end($this->hierarchy)->addXML('php', $this->status['text']);
-		$this->hierarchy[count($this->hierarchy) - 1]->addXML('php', $this->status['text']);
+		$index = null; //Needs to be passed by ref
+		$this->hierarchy[count($this->hierarchy) - 1]->addXML('php', $this->status['text'], $index);
 		return true;
 	}
 
@@ -706,7 +718,8 @@ class HTML_Parser extends HTML_Parser_Base {
 		if (!parent::parse_asp()) {return false;}
 
 		//end($this->hierarchy)->addASP('', $this->status['text']);
-		$this->hierarchy[count($this->hierarchy) - 1]->addASP('', $this->status['text']);
+		$index = null; //Needs to be passed by ref
+		$this->hierarchy[count($this->hierarchy) - 1]->addASP('', $this->status['text'], $index);
 		return true;
 	}
 
@@ -714,9 +727,11 @@ class HTML_Parser extends HTML_Parser_Base {
 		if (!parent::parse_script()) {return false;}
 
 		//$e = end($this->hierarchy)->addChild($this->status);
-		$e = $this->hierarchy[count($this->hierarchy) - 1]->addChild($this->status);
+		$index = null; //Needs to be passed by ref
+		$e = $this->hierarchy[count($this->hierarchy) - 1]->addChild($this->status, $index);
 		if ($this->status['text']) {
-			$e->addText($this->status['text']);
+			$index = null; //Needs to be passed by ref
+			$e->addText($this->status['text'], $index);
 		}
 		return true;
 	}
@@ -725,9 +740,11 @@ class HTML_Parser extends HTML_Parser_Base {
 		if (!parent::parse_style()) {return false;}
 
 		//$e = end($this->hierarchy)->addChild($this->status);
-		$e = $this->hierarchy[count($this->hierarchy) - 1]->addChild($this->status);
+		$index = null; //Needs to be passed by ref
+		$e = $this->hierarchy[count($this->hierarchy) - 1]->addChild($this->status, $index);
 		if ($this->status['text']) {
-			$e->addText($this->status['text']);
+			$index = null; //Needs to be passed by ref
+			$e->addText($this->status['text'], $index);
 		}
 		return true;
 	}
@@ -743,7 +760,8 @@ class HTML_Parser extends HTML_Parser_Base {
 		parent::parse_text();
 		if ($this->status['text']) {
 			//end($this->hierarchy)->addText($this->status['text']);
-			$this->hierarchy[count($this->hierarchy) - 1]->addText($this->status['text']);
+			$index = null; //Needs to be passed by ref
+			$this->hierarchy[count($this->hierarchy) - 1]->addText($this->status['text'], $index);
 		}
 	}
 
