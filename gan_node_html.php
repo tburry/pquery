@@ -2109,7 +2109,7 @@ CALLBACK;
 	 * @see match()
 	 * @access private
 	 */
-	protected function filter_containts($text) {
+	protected function filter_contains($text) {
 		return (strpos($this->getPlainText(), $text) !== false);
 	}
 
