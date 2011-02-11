@@ -18,7 +18,7 @@ $html = file_get_dom('http://www.cnn.com/');
 if (version_compare(PHP_VERSION, '5.3.0') >= 0) {
 	//PHP 5.3.0 and higher
 
-	foreach($html->select('div:has(h4) (li, h4)') as $element) {
+	foreach($html('div:has(h4) (li, h4)') as $element) {
 
 		if ($element->tag === 'h4') {
 			echo '<b>', $element->getPlainText(), '</b>';
