@@ -490,7 +490,7 @@ class Tokenizer_Base {
 	 */
 	function next_pos($needle, $callback = true) {
 		$this->token_start = $this->pos;
-		if (($this->pos < $this->size) && (($p = strpos($this->doc, $needle, $this->pos + 1)) !== false)) {
+		if (($this->pos < $this->size) && (($p = stripos($this->doc, $needle, $this->pos + 1)) !== false)) {
 
 			$len = $p - $this->pos - 1;
 			if ($len > 0) {
