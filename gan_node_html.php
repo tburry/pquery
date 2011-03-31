@@ -1092,7 +1092,7 @@ class HTML_Node {
 	/**
 	 * Delete a childnode
 	 * @param int|HTML_Node $child Child(index) to delete, negative to count from end
-	 * @param bool $soft_delete False to call {@link delete()) from child
+	 * @param bool $soft_delete False to call {@link delete()} from child
 	 */
 	function deleteChild($child, $soft_delete = false) {
 		if (is_object($child)) {

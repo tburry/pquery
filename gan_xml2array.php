@@ -88,7 +88,7 @@ class XML_Parser_Array extends HTML_Parser_Base {
 
 	function parse_text() {
 		parent::parse_text();
-		if ($this->status['text'] && ($this->hierarchy)) {
+		if (($this->status['text'] !== '') && $this->hierarchy) {
 			$current =& $this->hierarchy[count($this->hierarchy) - 1];
 			if (!$current['children']) {
 				$current['tagData'] = $this->status['text'];

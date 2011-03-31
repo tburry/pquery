@@ -679,7 +679,7 @@ class HTML_Parser extends HTML_Parser_Base {
 			//$e = end($this->hierarchy)->addConditional($this->status['tag_condition'], true);
 			$index = null; //Needs to be passed by ref
 			$e = $this->hierarchy[count($this->hierarchy) - 1]->addConditional($this->status['tag_condition'], true, $index);
-			if ($this->status['text']) {
+			if ($this->status['text'] !== '') {
 				$index = null; //Needs to be passed by ref
 				$e->addText($this->status['text'], $index);
 			}
@@ -729,7 +729,7 @@ class HTML_Parser extends HTML_Parser_Base {
 		//$e = end($this->hierarchy)->addChild($this->status);
 		$index = null; //Needs to be passed by ref
 		$e = $this->hierarchy[count($this->hierarchy) - 1]->addChild($this->status, $index);
-		if ($this->status['text']) {
+		if ($this->status['text'] !== '') {
 			$index = null; //Needs to be passed by ref
 			$e->addText($this->status['text'], $index);
 		}
@@ -742,7 +742,7 @@ class HTML_Parser extends HTML_Parser_Base {
 		//$e = end($this->hierarchy)->addChild($this->status);
 		$index = null; //Needs to be passed by ref
 		$e = $this->hierarchy[count($this->hierarchy) - 1]->addChild($this->status, $index);
-		if ($this->status['text']) {
+		if ($this->status['text'] !== '') {
 			$index = null; //Needs to be passed by ref
 			$e->addText($this->status['text'], $index);
 		}
@@ -758,7 +758,7 @@ class HTML_Parser extends HTML_Parser_Base {
 
 	function parse_text() {
 		parent::parse_text();
-		if ($this->status['text']) {
+		if ($this->status['text'] !== '') {
 			//end($this->hierarchy)->addText($this->status['text']);
 			$index = null; //Needs to be passed by ref
 			$this->hierarchy[count($this->hierarchy) - 1]->addText($this->status['text'], $index);
