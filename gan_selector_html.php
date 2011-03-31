@@ -293,7 +293,7 @@ class HTML_Selector {
 	var $root = null;
 
 	/**
-	 * Last performed query, result in (@link $result)
+	 * Last performed query, result in {@link $result}
 	 * @var string
 	 */
 	var $query = '';
@@ -327,10 +327,10 @@ class HTML_Selector {
 
 	/**
 	 * Class constructor
-	 * @param HTML_Node $root (@link $root)
+	 * @param HTML_Node $root {@link $root}
 	 * @param string $query
-	 * @param bool $search_root (@link $search_root)
-	 * @param bool $search_recursive (@link $search_recursive)
+	 * @param bool $search_root {@link $search_root}
+	 * @param bool $search_recursive {@link $search_recursive}
 	 * @param Tokenizer_CSSQuery $parser If null, then default class will be used
 	 */
 	function __construct($root, $query = '*', $search_root = false, $search_recursive = true, $parser = null) {
@@ -351,7 +351,7 @@ class HTML_Selector {
 	#php4e
 
 	/**
-	 * toString method, returns (@link $query)
+	 * toString method, returns {@link $query}
 	 * @return string
 	 * @access private
 	 */
@@ -805,7 +805,7 @@ class HTML_Selector {
 	static \$filter_map = $f;
 	return (\$e->match(\$conditions, true, \$filter_map));
 func;
-//'return ($e->match(unserialize(\''.serialize($conditions).'\'), true, unserialize(\''.serialize($this->custom_filter_map).'\')));'),
+		//'return ($e->match(unserialize(\''.serialize($conditions).'\'), true, unserialize(\''.serialize($this->custom_filter_map).'\')));'),
 		return ($this->result = $this->root->getChildrenByCallback(
 			create_function('$e', $func),
 			$recursive,
@@ -817,7 +817,7 @@ func;
 	 * Parse first bit of query, only root node has to be evaluated now
 	 * @param bool|int $recursive
 	 * @return bool
-	 * @internal Result of query is set in (@link $result)
+	 * @internal Result of query is set in {@link $result}
 	 * @access private
 	 */
 	protected function parse_single($recursive = true) {
@@ -832,7 +832,7 @@ func;
 	/**
 	 * Evaluate sibling nodes
 	 * @return bool
-	 * @internal Result of query is set in (@link $result)
+	 * @internal Result of query is set in {@link $result}
 	 * @access private
 	 */
 	protected function parse_adjacent() {
@@ -854,11 +854,11 @@ func;
 	}
 
 	/**
-	 * Evaluate (@link $result)
+	 * Evaluate {@link $result}
 	 * @param bool $parent Evaluate parent nodes
 	 * @param bool|int $recursive
 	 * @return bool
-	 * @internal Result of query is set in (@link $result)
+	 * @internal Result of query is set in {@link $result}
 	 * @access private
 	 */
 	protected function parse_result($parent = false, $recursive = true) {
@@ -884,7 +884,7 @@ func;
 	/**
 	 * Parse full query
 	 * @return bool
-	 * @internal Result of query is set in (@link $result)
+	 * @internal Result of query is set in {@link $result}
 	 * @access private
 	 */
 	protected function parse() {

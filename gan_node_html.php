@@ -267,7 +267,7 @@ class HTML_Node {
 	}
 
 	/**
-	 * Class toString, outputs (@link $tag)
+	 * Class toString, outputs {@link $tag}
 	 * @return string
 	 * @access private
 	 */
@@ -1657,7 +1657,7 @@ class HTML_Node {
 	 * @param array $tags array(array(
 	 *	'filter' => 'last-child',
 	 *	'params' => '123'))
-	 * @param array $custom_filters Custom map next to (@link $filter_map)
+	 * @param array $custom_filters Custom map next to {@link $filter_map}
 	 * @return bool
 	 * @internal Used by selector class
 	 * @see match()
@@ -1687,7 +1687,7 @@ class HTML_Node {
 	 * Checks if node matches certain conditions
 	 * @param array $tags array('tags' => array(tag_conditions), 'attributes' => array(attr_conditions), 'filters' => array(filter_conditions))
 	 * @param array $match Should conditions evaluate to true?
-	 * @param array $custom_filters Custom map next to (@link $filter_map)
+	 * @param array $custom_filters Custom map next to {@link $filter_map}
 	 * @return bool
 	 * @internal Used by selector class
 	 * @see match_tags();
