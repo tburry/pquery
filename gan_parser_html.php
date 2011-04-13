@@ -461,7 +461,8 @@ class HTML_Parser_Base extends Tokenizer_Base {
 	 */
 	function parse_all() {
 		$this->errors = array();
-		$this->status['last_pos'] = $this->pos;
+		$this->status['last_pos'] = -1;
+		
 		if (($this->token === self::TOK_TAG_OPEN) || ($this->next_pos('<', false) === self::TOK_UNKNOWN)) {
 			do {
 				if (!$this->parse_tag()) {
@@ -470,7 +471,7 @@ class HTML_Parser_Base extends Tokenizer_Base {
 			} while ($this->next_pos('<') !== self::TOK_NULL);
 		}
 
-		$this->pos = $this->size - 1;
+		$this->pos = $this->size;
 		$this->parse_text();
 
 		return true;
