@@ -21,10 +21,19 @@ function str_get_dom($str, $return_root = true) {
  * Returns HTML DOM from file/website
  * @param string $str
  * @param bool $return_root Return root node or return parser object
+ * @param bool $use_include_path Use include path search in file_get_contents
+ * @param resource $context Context resource used in file_get_contents (PHP >= 5.0.0)
  * @return HTML_Parser_HTML5|HTML_Node
  */
-function file_get_dom($file, $return_root = true) {
-	$f = file_get_contents($file);
+function file_get_dom($file, $return_root = true, $use_include_path = false, $context = null) {
+	if (version_compare(PHP_VERSION, '5.0.0', '>='))
+		$f = file_get_contents($file, $use_include_path, $context);
+	else {
+		if ($context !== null)
+			trigger_error('Context parameter not supported in this PHP version');
+		$f = file_get_contents($file, $use_include_path);
+	}
+	
 	return (($f === false) ? false : str_get_dom($f, $return_root));
 }
 

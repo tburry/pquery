@@ -589,7 +589,7 @@ class HTML_Selector {
 
 				$conditions['attributes'][] = array(
 					'attribute' => 'class',
-					'operator_value' => 'equals',
+					'operator_value' => 'contains',
 					'value' => $class,
 					'operator_result' => $last_mode
 				);
