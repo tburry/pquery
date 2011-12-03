@@ -759,7 +759,7 @@ class HTML_Node {
 	 * @see getNextSibling()
 	 */
 	function getPreviousSibling($skip_text_comments = true) {
-		$offset = 1;
+		$offset = -1;
 		while (($n = $this->getSibling($offset)) !== null) {
 			if ($skip_text_comments && ($n->tag[0] === '~')) {
 				--$offset;
