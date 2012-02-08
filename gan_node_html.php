@@ -821,12 +821,13 @@ class HTML_Node {
 	 * @see getTag()
 	 */
 	function setTag($tag, $with_ns = false) {
+		$with_ns = $with_ns || (strpos($tag, ':') !== false);
 		if ($with_ns) {
 			$this->tag = $tag;
 			$this->tag_ns = null;
 		} elseif ($this->getTag() !== $tag) {
 			$this->tag_ns[1] = $tag;
-			$this->tag = $this->tag_ns[0].':'.$tag;
+			$this->tag = (($this->tag_ns[0]) ? $this->tag_ns[0].':' : '').$tag;
 		}
 	}
 
