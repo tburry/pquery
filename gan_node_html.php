@@ -500,7 +500,7 @@ class HTML_Node {
 				//foreach($this->children as &$c) {
 				//	$c->changeParent($p);
 				//}
-				foreach(array_keys($this->children) as $k) {
+				foreach(array_reverse(array_keys($this->children)) as $k) {
 					$this->children[$k]->changeParent($p);
 				}
 			}
@@ -1720,7 +1720,7 @@ class HTML_Node {
 				return false;
 			}
 
-			if (($f && (!$this->match_filters($conditions['filters']))) === $match) {
+			if (($f && (!$this->match_filters($conditions['filters'], $custom_filters))) === $match) {
 				return false;
 			}
 

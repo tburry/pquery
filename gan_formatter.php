@@ -256,7 +256,7 @@ class HTML_Formatter {
 			}
 		}
 
-		if ($root->filter_element()) {
+		if ($root->select(':element', true, false, true)) {
 			$root->setTag(strtolower($root->tag), true);
 			if (($this->options['img_alt'] !== null) && ($root_tag === 'img') && (!isset($root->alt))) {
 				$root->alt = $this->options['img_alt'];
