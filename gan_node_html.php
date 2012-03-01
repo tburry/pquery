@@ -272,7 +272,7 @@ class HTML_Node {
 	 * @access private
 	 */
 	function __toString() {
-		return (($this->tag === '~root~') ? $this->getInnerText() : $this->tag);
+		return (($this->tag === '~root~') ? $this->toString(true, true, 1) : $this->tag);
 	}
 
 	/**
@@ -422,11 +422,11 @@ class HTML_Node {
 	/**
 	 * Return html code of node
 	 * @internal jquery (naming) compatibility
-	 * @see getOuterText()
+	 * @see toString()
 	 * @return string
 	 */
 	function html() {
-		return $this->getOuterText();
+		return $this->toString();
 	}
 
 	/**
