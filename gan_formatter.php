@@ -299,7 +299,7 @@ class HTML_Formatter {
 					}
 				}
 
-				if ($format_inside) {
+				if ($format_inside && count($n->children)) {
 					//$last = end($n->children);
 					$last = $n->children[count($n->children) - 1];
 					$last_tag = ($last) ? strtolower($last->tag) : '';

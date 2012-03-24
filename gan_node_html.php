@@ -1594,52 +1594,52 @@ class HTML_Node {
 							case '%=':
 							case 'contains_regex':
 								$res = ((preg_match('`'.$match['value'].'`s', $val) > 0) === $match['match']);
-								break ((int) $res) + 1;
+								if ($res) break 1; else break 2;
 
 							case '|=':
 							case 'contains_prefix':
 								$res = ((preg_match('`\b'.preg_quote($match['value']).'[\-\s]?`s', $val) > 0) === $match['match']);
-								break ((int) $res) + 1;
+								if ($res) break 1; else break 2;
 
 							case '~=':
 							case 'contains_word':
 								$res = ((preg_match('`\b'.preg_quote($match['value']).'\b`s', $val) > 0) === $match['match']);
-								break ((int) $res) + 1;
+								if ($res) break 1; else break 2;
 
 							case '*=':
 							case 'contains':
 								$res = ((strpos($val, $match['value']) !== false) === $match['match']);
-								break ((int) $res) + 1;
+								if ($res) break 1; else break 2;
 
 							case '$=':
 							case 'ends_with':
 								$res = ((substr($val, -strlen($match['value'])) === $match['value']) === $match['match']);
-								break ((int) $res) + 1;
+								if ($res) break 1; else break 2;
 
 							case '^=':
 							case 'starts_with':
 								$res = ((substr($val, 0, strlen($match['value'])) === $match['value']) === $match['match']);
-								break ((int) $res) + 1;
+								if ($res) break 1; else break 2;
 
 							case '!=':
 							case 'not_equal':
 								$res = (($val !== $match['value']) === $match['match']);
-								break ((int) $res) + 1;
+								if ($res) break 1; else break 2;
 
 							case '=':
 							case 'equals':
 								$res = (($val === $match['value']) === $match['match']);
-								break ((int) $res) + 1;
+								if ($res) break 1; else break 2;
 
 							case '>=':
 							case 'bigger_than':
 								$res = (($val >= $match['value']) === $match['match']);
-								break ((int) $res) + 1;
+								if ($res) break 1; else break 2;
 
 							case '<=':
 							case 'smaller_than':
 								$res = (($val >= $match['value']) === $match['match']);
-								break ((int) $res) + 1;
+								if ($res) break 1; else break 2;
 
 							default:
 								trigger_error('Unknown operator "'.$match['operator_value'].'" to match attributes!');
@@ -1856,7 +1856,7 @@ CALLBACK;
 			if ($index < 0) {
 				$index += count($res);
 			}
-			return $res[$index];
+			return ($index < count($res)) ? $res[$index] : null;
 		} else {
 			return $res;
 		}
@@ -2205,8 +2205,8 @@ class HTML_NODE_TEXT extends HTML_Node {
 	protected function filter_element() {return false;}
 	protected function filter_text() {return true;}
 	function toString_attributes() {return '';}
-	function toString_content() {return $this->text;}
-	function toString() {return $this->text;}
+	function toString_content($attributes = true, $recursive = true, $content_only = false) {return $this->text;}
+	function toString($attributes = true, $recursive = true, $content_only = false) {return $this->text;}
 }
 
 /**
@@ -2245,8 +2245,8 @@ class HTML_NODE_COMMENT extends HTML_Node {
 	protected function filter_element() {return false;}
 	protected function filter_comment() {return true;}
 	function toString_attributes() {return '';}
-	function toString_content() {return $this->text;}
-	function toString() {return '<!--'.$this->text.'-->';}
+	function toString_content($attributes = true, $recursive = true, $content_only = false) {return $this->text;}
+	function toString($attributes = true, $recursive = true, $content_only = false) {return '<!--'.$this->text.'-->';}
 }
 
 /**
@@ -2334,8 +2334,8 @@ class HTML_NODE_CDATA extends HTML_Node {
 	
 	protected function filter_element() {return false;}
 	function toString_attributes() {return '';}
-	function toString_content() {return $this->text;}
-	function toString() {return '<![CDATA['.$this->text.']]>';}
+	function toString_content($attributes = true, $recursive = true, $content_only = false) {return $this->text;}
+	function toString($attributes = true, $recursive = true, $content_only = false) {return '<![CDATA['.$this->text.']]>';}
 }
 
 /**
@@ -2371,8 +2371,8 @@ class HTML_NODE_DOCTYPE extends HTML_Node {
 
 	protected function filter_element() {return false;}
 	function toString_attributes() {return '';}
-	function toString_content() {return $this->text;}
-	function toString() {return '<'.$this->tag.' '.$this->dtd.'>';}
+	function toString_content($attributes = true, $recursive = true, $content_only = false) {return $this->text;}
+	function toString($attributes = true, $recursive = true, $content_only = false) {return '<'.$this->tag.' '.$this->dtd.'>';}
 }
 
 /**

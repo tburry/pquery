@@ -37,7 +37,7 @@ class XML_Parser_Array extends HTML_Parser_Base {
 	protected function parse_hierarchy($self_close) {
 		if ($this->status['closing_tag']) {
 			$found = false;
-			for ($count = count($this->hierarchy), $i = $count; $i >= 0; $i--) {
+			for ($count = count($this->hierarchy), $i = $count - 1; $i >= 0; $i--) {
 				if (strcasecmp($this->hierarchy[$i]['name'], $this->status['tag_name']) === 0) {
 
 					for($ii = ($count - $i - 1); $ii >= 0; $ii--) {
@@ -58,7 +58,8 @@ class XML_Parser_Array extends HTML_Parser_Base {
 		} else {
 			$tag = array(
 				'name' => $this->status['tag_name'],
-				'attrs' => $this->status['attributes']
+				'attrs' => $this->status['attributes'],
+				'children' => array()
 			);
 			if ($this->hierarchy) {
 				$current =& $this->hierarchy[count($this->hierarchy) - 1];
@@ -68,7 +69,6 @@ class XML_Parser_Array extends HTML_Parser_Base {
 			} else {
 				$this->root = $tag;
 				$tag =& $this->root;
-				$tag['children'] = array();
 				$self_close = false;
 			}
 			if (!$self_close) {
