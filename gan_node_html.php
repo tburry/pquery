@@ -408,12 +408,7 @@ class HTML_Node {
 			}
 			$parser->setDoc($text);
 			$parser->parse_all();
-			//foreach($parser->root->children as &$c) {
-			//	$this->parent->addChild($c, $index);
-			//}
-			foreach(array_keys($parser->root->children) as $k) {
-				$this->parent->addChild($parser->root->children[$k], $index);
-			}
+			$parser->root->moveChildren($this->parent, $index);
 		}
 		$this->delete();
 		return (($parser && $parser->errors) ? $parser->errors : true);
@@ -495,14 +490,11 @@ class HTML_Node {
 	 */
 	function detach($move_children_up = false) {
 		if (($p = $this->parent) !== null) {
+			$index = $this->index();
 			$this->parent = null;
+			
 			if ($move_children_up) {
-				//foreach($this->children as &$c) {
-				//	$c->changeParent($p);
-				//}
-				foreach(array_reverse(array_keys($this->children)) as $k) {
-					$this->children[$k]->changeParent($p);
-				}
+				$this->moveChildren($p, $index);
 			}
 			$p->deleteChild($this, true);
 		}
