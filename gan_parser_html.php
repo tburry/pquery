@@ -399,7 +399,8 @@ class HTML_Parser_Base extends Tokenizer_Base {
 		$this->status['self_close'] = false;
 		$this->parse_text();
 
-		if ($this->doc[$this->pos + 1] === '!') {
+		$next = (($this->pos + 1) < $this->size) ? $this->doc[$this->pos + 1] : '';
+		if ($next === '!') {
 			$this->status['closing_tag'] = false;
 
 			if (substr($this->doc, $this->pos + 2, 2) === '--') {
@@ -424,7 +425,7 @@ class HTML_Parser_Base extends Tokenizer_Base {
 					}
 				}
 			}
-		} elseif ($this->doc[$this->pos + 1] === '/') {
+		} elseif ($next === '/') {
 			$this->status['closing_tag'] = true;
 			++$this->pos;
 		} else {
@@ -543,14 +544,6 @@ class HTML_Parser extends HTML_Parser_Base {
 	#php4 PHP4 class constructor compatibility
 	#function HTML_Parser($doc = '', $pos = 0, $root = null) {return $this->__construct($doc, $pos, $root);}
 	#php4e
-
-	/**
-	 * Class destructor
-	 * @access private
-	 */
-	function __destruct() {
-		$this->root = null;
-	}
 
 	/**
 	 * Class magic invoke method, performs {@link select()}

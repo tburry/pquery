@@ -347,6 +347,23 @@ class Tokenizer_Base {
 	}
 
 	/**
+	 * Parse line breaks and increase line number
+	 * @internal Gets called to process line breaks
+	 */
+	protected function parse_linebreak() {
+		if($this->doc[$this->pos] === "\r") {
+			++$this->line_pos[0];
+			if ((($this->pos + 1) < $this->size) && ($this->doc[$this->pos + 1] === "\n")) {
+				++$this->pos;
+			}
+			$this->line_pos[1] = $this->pos;
+		} elseif($this->doc[$this->pos] === "\n") {
+			++$this->line_pos[0];
+			$this->line_pos[1] = $this->pos;
+		}
+	}
+
+	/**
 	 * Parse whitespace
 	 * @return int Token
 	 * @internal Gets called with {@link $whitespace} characters
@@ -357,15 +374,8 @@ class Tokenizer_Base {
 		while(++$this->pos < $this->size) {
 			if (!isset($this->whitespace[$this->doc[$this->pos]])) {
 				break;
-			} elseif($this->doc[$this->pos] === "\r") {
-				++$this->line_pos[0];
-				if ($this->doc[$this->pos + 1] === "\n") {
-					++$this->pos;
-				}
-				$this->line_pos[1] = $this->pos;
-			} elseif($this->doc[$this->pos] === "\n") {
-				++$this->line_pos[0];
-				$this->line_pos[1] = $this->pos;
+			} else {
+				$this->parse_linebreak();
 			}
 		}
 
@@ -427,15 +437,8 @@ class Tokenizer_Base {
 				} else {
 					return ($this->token = self::TOK_UNKNOWN);
 				}
-			} elseif($this->doc[$this->pos] === "\r") {
-				++$this->line_pos[0];
-				if ($this->doc[$this->pos + 1] === "\n") {
-					++$this->pos;
-				}
-				$this->line_pos[1] = $this->pos;
-			} elseif($this->doc[$this->pos] === "\n") {
-				++$this->line_pos[0];
-				$this->line_pos[1] = $this->pos;
+			} else {
+				$this->parse_linebreak();
 			}
 		}
 
@@ -467,15 +470,8 @@ class Tokenizer_Base {
 				} else {
 					return ($this->token = self::TOK_UNKNOWN);
 				}
-			} elseif($this->doc[$this->pos] === "\r") {
-				++$this->line_pos[0];
-				if ($this->doc[$this->pos + 1] === "\n") {
-					++$this->pos;
-				}
-				$this->line_pos[1] = $this->pos;
-			} elseif($this->doc[$this->pos] === "\n") {
-				++$this->line_pos[0];
-				$this->line_pos[1] = $this->pos;
+			} else {
+				$this->parse_linebreak();
 			}
 		}
 

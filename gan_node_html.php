@@ -513,6 +513,7 @@ class HTML_Node {
 	 */
 	function clear() {
 		foreach($this->children as $c) {
+			$c->parent = null;
 			$c->delete();
 		}
 		$this->children = array();
@@ -1122,18 +1123,22 @@ class HTML_Node {
 	/**
 	 * Wrap node
 	 * @param string|HTML_Node $node Wrapping node, string to create new element node
-	 * @param int $index Index to insert wrapping node, -1 to append
-	 * @param int $child_index Index to insert current node in wrapping node, -1 to append
+	 * @param int $wrap_index Index to insert current node in wrapping node, -1 to append
+	 * @param int $node_index Index to insert wrapping node, null to keep at same position
 	 * @return HTML_Node Wrapping node
 	 */
-	function wrap($node, $index = -1, $child_index = -1) {
+	function wrap($node, $wrap_index = -1, $node_index = null) {
+		if ($node_index === null) {
+			$node_index = $this->index();
+		}
+		
 		if (!is_object($node)) {
-			$node = $this->parent->addChild($node, $index);
+			$node = $this->parent->addChild($node, $node_index);
 		} elseif ($node->parent !== $this->parent) {
-			$node->changeParent($this->parent, $index);
+			$node->changeParent($this->parent, $node_index);
 		}
 
-		$this->changeParent($node, $child_index);
+		$this->changeParent($node, $wrap_index);
 		return $node;
 	}
 
@@ -1142,22 +1147,25 @@ class HTML_Node {
 	 * @param string|HTML_Node $node Wrapping node, string to create new element node
 	 * @param int $start Index from child node where to start wrapping, 0 for first element
 	 * @param int $end Index from child node where to end wrapping, -1 for last element
-	 * @param int $index Index to insert wrapping node, -1 to append
-	 * @param int $child_index Index to insert current node in wrapping node, -1 to append
+	 * @param int $wrap_index Index to insert in wrapping node, -1 to append
+	 * @param int $node_index Index to insert current node, null to keep at same position
 	 * @return HTML_Node Wrapping node
 	 */
-	function wrapInner($node, $start = 0, $end = -1, $index = -1, $child_index = -1) {
+	function wrapInner($node, $start = 0, $end = -1, $wrap_index = -1, $node_index = null) {
 		if ($end < 0) {
 			$end += count($this->children);
 		}
-
-		if (!is_object($node)) {
-			$node = $this->addChild($node, $index);
-		} elseif ($node->parent !== $this) {
-			$node->changeParent($this->parent, $index);
+		if ($node_index === null) {
+			$node_index = $end + 1;
 		}
 
-		$this->moveChildren($node, $child_index, $start, $end);
+		if (!is_object($node)) {
+			$node = $this->addChild($node, $node_index);
+		} elseif ($node->parent !== $this) {
+			$node->changeParent($this->parent, $node_index);
+		}
+
+		$this->moveChildren($node, $wrap_index, $start, $end);
 		return $node;
 	}
 
@@ -1461,6 +1469,40 @@ class HTML_Node {
 
 		return $res;
 	}
+	
+	/**
+	 * Finds children using the {$link match()} function
+	 * @param $conditions See {$link match()}
+	 * @param $custom_filters See {$link match()}
+	 * @param bool|int $recursive Check recursively
+	 * @param bool $check_self Include this node in search?
+	 * @return array
+	 */
+	function getChildrenByMatch($conditions, $recursive = true, $check_self = false, $custom_filters = array()) {
+		$count = $this->childCount();
+		if ($check_self && $this->match($conditions, true, $custom_filters)) {
+			$res = array($this);
+		} else {
+			$res = array();
+		}
+
+		if ($count > 0) {
+			if (is_int($recursive)) {
+				$recursive = (($recursive > 1) ? $recursive - 1 : false);
+			}
+
+			for ($i = 0; $i < $count; $i++) {
+				if ($this->children[$i]->match($conditions, true, $custom_filters)) {
+					$res[] = $this->children[$i];
+				}
+				if ($recursive) {
+					$res = array_merge($res, $this->children[$i]->getChildrenByMatch($conditions, $recursive, false, $custom_filters));
+				}
+			}
+		}
+
+		return $res;
+	}
 
 	/**
 	 * Checks if tag matches certain conditions
@@ -1744,28 +1786,18 @@ class HTML_Node {
 
 		$mode = explode(' ', strtolower($mode));
 		$match = ((isset($mode[1]) && ($mode[1] === 'not')) ? 'false' : 'true');
-		$func =
-<<<CALLBACK
-	return (%s->match(array(
-		'attributes' => array(
-			'%s' => array(
-				'operator_value' => '%s',
-				'value' => %s,
-				'match' => %s,
-				'compare' => '%s'
-			)
-		)
-	)));
-CALLBACK;
 
-		return $this->getChildrenByCallback(
-			create_function('$e', sprintf($func, '$e',
-				$attribute,
-				$mode[0],
-				((is_string($value)) ? "'$value'" : (($value) ? 'true' : 'false')),
-				$match,
-				$compare
-			)),
+		return $this->getChildrenByMatch(
+			array(
+				'attributes' => array(
+					$attribute => array(
+						'operator_value' => $mode[0],
+						'value' => $value,
+						'match' => $match,
+						'compare' => $compare
+					)
+				)
+			),
 			$recursive
 		);
 	}
@@ -1785,24 +1817,15 @@ CALLBACK;
 		$tag = explode(' ', strtolower($tag));
 		$match = ((isset($tag[1]) && ($tag[1] === 'not')) ? 'false' : 'true');
 
-		$func =
-<<<CALLBACK
-	return (%s->match(array(
-		'tags' => array(
-			'%s' => array(
-				'match' => %s,
-				'compare' => '%s'
-			)
-		)
-	)));
-CALLBACK;
-
-		return $this->getChildrenByCallback(
-			create_function('$e', sprintf($func, '$e',
-				$tag[0],
-				$match,
-				$compare
-			)),
+		return $this->getChildrenByMatch(
+			array(
+				'tags' => array(
+					$tag[0] => array(
+						'match' => $match,
+						'compare' => $compare
+					)
+				)
+			),
 			$recursive
 		);
 	}
@@ -1814,7 +1837,7 @@ CALLBACK;
 	 * @return array
 	 */
 	function getChildrenByID($id, $recursive = true) {
-		return getChildrenByAttribute('id', $id, 'equals', 'total', $recursive);
+		return $this->getChildrenByAttribute('id', $id, 'equals', 'total', $recursive);
 	}
 
 	/**
@@ -1824,7 +1847,7 @@ CALLBACK;
 	 * @return array
 	 */
 	function getChildrenByClass($class, $recursive = true) {
-		return getChildrenByAttribute('class', $id, 'equals', 'total', $recursive);
+		return $this->getChildrenByAttribute('class', $id, 'equals', 'total', $recursive);
 	}
 
 	/**
@@ -1834,7 +1857,7 @@ CALLBACK;
 	 * @return array
 	 */
 	function getChildrenByName($name, $recursive = true) {
-		return getChildrenByAttribute('name', $name, 'equals', 'total', $recursive);
+		return $this->getChildrenByAttribute('name', $name, 'equals', 'total', $recursive);
 	}
 
 	/**

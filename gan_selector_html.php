@@ -165,7 +165,7 @@ class Tokenizer_CSSQuery extends Tokenizer_Base {
 	 * @return int
 	 */
 	protected function parse_gt() {
-		if ($this->doc[$this->pos + 1] === '=') {
+		if ((($this->pos + 1) < $this->size) && ($this->doc[$this->pos + 1] === '=')) {
 			++$this->pos;
 			return ($this->token = self::TOK_COMPARE_BIGGER_THAN);
 		} else {
@@ -179,7 +179,7 @@ class Tokenizer_CSSQuery extends Tokenizer_Base {
 	 * @return int
 	 */
 	protected function parse_sibling() {
-		if ($this->doc[$this->pos + 1] === '=') {
+		if ((($this->pos + 1) < $this->size) && ($this->doc[$this->pos + 1] === '=')) {
 			++$this->pos;
 			return ($this->token = self::TOK_COMPARE_CONTAINS_WORD);
 		} else {
@@ -193,7 +193,7 @@ class Tokenizer_CSSQuery extends Tokenizer_Base {
 	 * @return int
 	 */
 	protected function parse_pipe() {
-		if ($this->doc[$this->pos + 1] === '=') {
+		if ((($this->pos + 1) < $this->size) && ($this->doc[$this->pos + 1] === '=')) {
 			++$this->pos;
 			return ($this->token = self::TOK_COMPARE_PREFIX);
 		} else {
@@ -207,7 +207,7 @@ class Tokenizer_CSSQuery extends Tokenizer_Base {
 	 * @return int
 	 */
 	protected function parse_star() {
-		if ($this->doc[$this->pos + 1] === '=') {
+		if ((($this->pos + 1) < $this->size) && ($this->doc[$this->pos + 1] === '=')) {
 			++$this->pos;
 			return ($this->token = self::TOK_COMPARE_CONTAINS);
 		} else {
@@ -221,7 +221,7 @@ class Tokenizer_CSSQuery extends Tokenizer_Base {
 	 * @return int
 	 */
 	protected function parse_not() {
-		if ($this->doc[$this->pos + 1] === '=') {
+		if ((($this->pos + 1) < $this->size) && ($this->doc[$this->pos + 1] === '=')) {
 			++$this->pos;
 			return ($this->token = self::TOK_COMPARE_NOT_EQUAL);
 		} else {
@@ -234,7 +234,7 @@ class Tokenizer_CSSQuery extends Tokenizer_Base {
 	 * @return int
 	 */
 	protected function parse_compare() {
-		if ($this->doc[$this->pos + 1] === '=') {
+		if ((($this->pos + 1) < $this->size) && ($this->doc[$this->pos + 1] === '=')) {
 			switch($this->doc[$this->pos++]) {
 				case '$':
 					return ($this->token = self::TOK_COMPARE_ENDS);
@@ -589,7 +589,7 @@ class HTML_Selector {
 
 				$conditions['attributes'][] = array(
 					'attribute' => 'class',
-					'operator_value' => 'contains',
+					'operator_value' => 'contains_word',
 					'value' => $class,
 					'operator_result' => $last_mode
 				);
@@ -797,19 +797,11 @@ class HTML_Selector {
 	 * @access private
 	 */
 	protected function parse_callback($conditions, $recursive = true, $check_root = false) {
-		$c = var_export($conditions, true);
-		$f = var_export($this->custom_filter_map, true);
-		$func =
-<<<func
-	static \$conditions = $c;
-	static \$filter_map = $f;
-	return (\$e->match(\$conditions, true, \$filter_map));
-func;
-		//'return ($e->match(unserialize(\''.serialize($conditions).'\'), true, unserialize(\''.serialize($this->custom_filter_map).'\')));'),
-		return ($this->result = $this->root->getChildrenByCallback(
-			create_function('$e', $func),
+		return ($this->result = $this->root->getChildrenByMatch(
+			$conditions,
 			$recursive,
-			$check_root
+			$check_root,
+			$this->custom_filter_map
 		));
 	}
 
