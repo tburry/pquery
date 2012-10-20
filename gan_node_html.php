@@ -458,6 +458,19 @@ class HTML_Node {
 	function getPlainText() {
 		return preg_replace('`\s+`', ' ', html_entity_decode($this->toString(true, true, true), ENT_QUOTES));
 	}
+	
+	/**
+	 * Return plaintext taking document encoding into account
+	 * @return string
+	 */
+	function getPlainTextUTF8() {
+		$txt = $this->getPlainText();
+		$enc = $this->getEncoding();
+		if ($enc !== false) {
+			$txt = mb_convert_encoding($txt, "UTF-8", $enc);
+		}
+		return $txt;
+	}
 
 	/**
 	 * Similar to JavaScript plainText, will replace childnodes with new text (literal)
@@ -512,6 +525,21 @@ class HTML_Node {
 	}
 
 	/**
+	 * Get top parent
+	 * @return HTML_Node Root, null if node has no parent
+	 */
+	function getRoot() {
+		$r = $this->parent;
+		$n = ($r === null) ? null : $r->parent;
+		while ($n !== null) {
+			$r = $n;
+			$n = $r->parent;
+		}
+		
+		return $r;
+	}
+
+	/**
 	 * Change parent
 	 * @param HTML_Node $to New parent, null if none
 	 * @param int $index Add child to parent if not present at index, false to not add, negative to cound from end, null to append
@@ -555,7 +583,7 @@ class HTML_Node {
 	}
 
 	/**
-	 * Find out if node has a certain parent
+	 * Find out if node is parent of a certain tag
 	 * @param HTML_Node|string $tag Match against parent, string to match tag, object to fully match node
 	 * @param bool $recursive
 	 * @return bool
@@ -823,6 +851,26 @@ class HTML_Node {
 			$this->tag = (($this->tag_ns[0]) ? $this->tag_ns[0].':' : '').$tag;
 		}
 	}
+	
+	/**
+	 * Try to determine the encoding of the current tag
+	 * @return string|bool False if encoding could not be found
+	 */
+	function getEncoding() {
+		$root = $this->getRoot();
+		if ($root !== null) {
+			if ($enc = $root->select('meta[charset]', 0, true, true)) {
+				return $enc->getAttribute("charset");
+			} elseif ($enc = $root->select('"?xml"[encoding]', 0, true, true)) {
+				return $enc->getAttribute("encoding");
+			} elseif ($enc = $root->select('meta[content*="charset="]', 0, true, true)) {
+				$enc = $enc->getAttribute("content");
+				return substr($enc, strpos($enc, "charset=")+8);
+			}
+		}
+		
+		return false;
+	}	
 
 	/**
 	 * Number of children in node
