@@ -334,7 +334,11 @@ class HTML_Node {
 	protected function toString_attributes() {
 		$s = '';
 		foreach($this->attributes as $a => $v) {
-			$s .= ' '.$a.(((!$this->attribute_shorttag) || ($v !== $a)) ? '="'.htmlspecialchars($v, ENT_QUOTES, '', false).'"' : '');
+			$s .= ' '.$a;
+			if ((!$this->attribute_shorttag) || ($v !== $a)) {
+				$quote = (strpos($v, '"') === false) ? '"' : "'";
+				$s .= '='.$quote.$v.$quote;
+			}
 		}
 		return $s;
 	}
