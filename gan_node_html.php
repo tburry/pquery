@@ -1937,18 +1937,18 @@ class HTML_Node {
 
 	/**
 	 * Checks if node matches css query filter ":nth-child(n)"
-	 * @param string $n
+	 * @param string $n 1-based index
 	 * @return bool
 	 * @see match()
 	 * @access private
 	 */
 	protected function filter_nchild($n) {
-		return ($this->index(false) === (int) $n);
+		return ($this->index(false)+1 === (int) $n);
 	}
 
 	/**
 	 * Checks if node matches css query filter ":gt(n)"
-	 * @param string $n
+	 * @param string $n 0-based index
 	 * @return bool
 	 * @see match()
 	 * @access private
@@ -1959,7 +1959,7 @@ class HTML_Node {
 
 	/**
 	 * Checks if node matches css query filter ":lt(n)"
-	 * @param string $n
+	 * @param string $n 0-based index
 	 * @return bool
 	 * @see match()
 	 * @access private
@@ -1970,7 +1970,7 @@ class HTML_Node {
 
 	/**
 	 * Checks if node matches css query filter ":nth-last-child(n)"
-	 * @param string $n
+	 * @param string $n 1-based index
 	 * @return bool
 	 * @see match()
 	 * @access private
@@ -1979,24 +1979,24 @@ class HTML_Node {
 		if ($this->parent === null) {
 			return false;
 		} else {
-			return ($this->parent->childCount(true) - 1 - $this->index(false) === (int) $n);
+			return ($this->parent->childCount(true) - $this->index(false) === (int) $n);
 		}
 	}
 
 	/**
 	 * Checks if node matches css query filter ":nth-of-type(n)"
-	 * @param string $n
+	 * @param string $n 1-based index
 	 * @return bool
 	 * @see match()
 	 * @access private
 	 */
 	protected function filter_ntype($n) {
-		return ($this->typeIndex() === (int) $n);
+		return ($this->typeIndex()+1 === (int) $n);
 	}
 
 	/**
-	 * Checks if node matches css query filter ":nth-;ast-of-type(n)"
-	 * @param string $n
+	 * Checks if node matches css query filter ":nth-last-of-type(n)"
+	 * @param string $n 1-based index
 	 * @return bool
 	 * @see match()
 	 * @access private
@@ -2005,7 +2005,7 @@ class HTML_Node {
 		if ($this->parent === null) {
 			return false;
 		} else {
-			return (count($this->parent->getChildrenByTag($this->tag, 'total', false)) - 1 - $this->typeIndex() === (int) $n);
+			return (count($this->parent->getChildrenByTag($this->tag, 'total', false)) - $this->typeIndex() === (int) $n);
 		}
 	}
 
