@@ -468,12 +468,12 @@ class HTML_Node {
 	 * @return string
 	 */
 	function getPlainTextUTF8() {
-		$txt = $this->getPlainText();
+		$txt = $this->toString(true, true, true);
 		$enc = $this->getEncoding();
 		if ($enc !== false) {
-			$txt = mb_convert_encoding($txt, "UTF-8", $enc);
+			$txt = mb_convert_encoding($txt, 'UTF-8', $enc);
 		}
-		return $txt;
+		return preg_replace('`\s+`', ' ', html_entity_decode($txt, ENT_QUOTES, 'UTF-8'));
 	}
 
 	/**
@@ -2178,7 +2178,7 @@ class HTML_Node {
 	 * @access private
 	 */
 	protected function filter_contains($text) {
-		return (strpos($this->getPlainText(), $text) !== false);
+		return (strpos($this->getPlainTextUTF8(), $text) !== false);
 	}
 
 	/**
