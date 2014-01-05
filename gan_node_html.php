@@ -1,23 +1,18 @@
 <?php
 /**
  * @author Niels A.D.
- * @package Ganon
- * @link http://code.google.com/p/ganon/
- * @license http://dev.perl.org/licenses/artistic.html Artistic License
+ * @author Todd Burry <todd@vanillaforums.com>
+ * @package pQuery
+ * @license http://opensource.org/licenses/LGPL-2.1 LGPL-2.1
  */
 
-#!! <- Ignore when converting to single file
-if (!defined('GANON_NO_INCLUDES')) {
-	include_once('gan_parser_html.php');
-	include_once('gan_selector_html.php');
-}
-#!
+namespace pQuery;
 
 /**
  * Holds (x)html/xml tag information like tag name, attributes,
  * parent, children, self close, etc.
  */
-class HTML_Node {
+class DomNode {
 
 	/**
 	 * Element Node, used for regular elements
@@ -51,7 +46,7 @@ class HTML_Node {
 	 * ASP Node
 	 */
 	const NODE_ASP = 7;
-	
+
 	#php4 Compatibility with PHP4, this gets changed to a regular var in release tool
 	#static $NODE_TYPE = self::NODE_ELEMENT;
 	#php4e
@@ -68,14 +63,14 @@ class HTML_Node {
 	 * @var string
 	 * @see select()
 	 */
-	var $selectClass = 'HTML_Selector';
+	var $selectClass = 'pQuery\\HTMLSelector';
 	/**
 	 * Name of the parser class
 	 * @var string
 	 * @see setOuterText()
 	 * @see setInnerText()
 	 */
-	var $parserClass = 'HTML_Parser_HTML5';
+	var $parserClass = 'pQuery\\Html5Parser';
 
 	/**
 	 * Name of the class used for {@link addChild()}
@@ -86,41 +81,41 @@ class HTML_Node {
 	 * Name of the class used for {@link addText()}
 	 * @var string
 	 */
-	var $childClass_Text = 'HTML_Node_TEXT';
+	var $childClass_Text = 'pQuery\\TextNode';
 	/**
 	 * Name of the class used for {@link addComment()}
 	 * @var string
 	 */
-	var $childClass_Comment = 'HTML_Node_COMMENT';
+	var $childClass_Comment = 'pQuery\\CommentNode';
 	/**
 	 * Name of the class used for {@link addContional()}
 	 * @var string
 	 */
-	var $childClass_Conditional = 'HTML_Node_CONDITIONAL';
+	var $childClass_Conditional = 'pQuery\\ConditionalTagNode';
 	/**
 	 * Name of the class used for {@link addCDATA()}
 	 * @var string
 	 */
-	var $childClass_CDATA = 'HTML_Node_CDATA';
+	var $childClass_CDATA = 'pQuery\\CdataNode';
 	/**
 	 * Name of the class used for {@link addDoctype()}
 	 * @var string
 	 */
-	var $childClass_Doctype = 'HTML_Node_DOCTYPE';
+	var $childClass_Doctype = 'pQuery\\DoctypeNode';
 	/**
 	 * Name of the class used for {@link addXML()}
 	 * @var string
 	 */
-	var $childClass_XML = 'HTML_Node_XML';
+	var $childClass_XML = 'pQuery\\XmlNode';
 	/**
 	 * Name of the class used for {@link addASP()}
 	 * @var string
 	 */
-	var $childClass_ASP = 'HTML_Node_ASP';
+	var $childClass_ASP = 'pQuery\\AspEmbeddedNode';
 
 	/**
 	 * Parent node, null if none
-	 * @var HTML_Node
+	 * @var DomNode
 	 * @see changeParent()
 	 */
 	var $parent = null;
@@ -240,7 +235,7 @@ class HTML_Node {
 	 *	'tag_name' => 'tag',
 	 *	'self_close' => false,
 	 *	'attributes' => array('attribute' => 'value')))
-	 * @param HTML_Node $parent Parent of node, null if none
+	 * @param DomNode $parent Parent of node, null if none
 	 */
 	function __construct($tag, $parent) {
 		$this->parent = $parent;
@@ -253,9 +248,9 @@ class HTML_Node {
 			$this->attributes = $tag['attributes'];
 		}
 	}
-	
+
 	#php4 PHP4 class constructor compatibility
-	#function HTML_Node($tag, $parent) {return $this->__construct($tag, $parent);}
+	#function DomNode($tag, $parent) {return $this->__construct($tag, $parent);}
 	#php4e
 
 	/**
@@ -401,7 +396,7 @@ class HTML_Node {
 	/**
 	 * Similar to JavaScript outerText, will replace node (and childnodes) with new text
 	 * @param string $text
-	 * @param HTML_Parser_Base $parser Null to auto create instance
+	 * @param HtmlParserBase $parser Null to auto create instance
 	 * @return bool|array True on succeed, array with errors on failure
 	 */
 	function setOuterText($text, $parser = null) {
@@ -439,7 +434,7 @@ class HTML_Node {
 	/**
 	 * Similar to JavaScript innerText, will replace childnodes with new text
 	 * @param string $text
-	 * @param HTML_Parser_Base $parser Null to auto create instance
+	 * @param HtmlParserBase $parser Null to auto create instance
 	 * @return bool|array True on succeed, array with errors on failure
 	 */
 	function setInnerText($text, $parser = null) {
@@ -462,7 +457,7 @@ class HTML_Node {
 	function getPlainText() {
 		return preg_replace('`\s+`', ' ', html_entity_decode($this->toString(true, true, true), ENT_QUOTES));
 	}
-	
+
 	/**
 	 * Return plaintext taking document encoding into account
 	 * @return string
@@ -509,7 +504,7 @@ class HTML_Node {
 		if (($p = $this->parent) !== null) {
 			$index = $this->index();
 			$this->parent = null;
-			
+
 			if ($move_children_up) {
 				$this->moveChildren($p, $index);
 			}
@@ -530,7 +525,7 @@ class HTML_Node {
 
 	/**
 	 * Get top parent
-	 * @return HTML_Node Root, null if node has no parent
+	 * @return DomNode Root, null if node has no parent
 	 */
 	function getRoot() {
 		$r = $this->parent;
@@ -539,13 +534,13 @@ class HTML_Node {
 			$r = $n;
 			$n = $r->parent;
 		}
-		
+
 		return $r;
 	}
 
 	/**
 	 * Change parent
-	 * @param HTML_Node $to New parent, null if none
+	 * @param DomNode $to New parent, null if none
 	 * @param int $index Add child to parent if not present at index, false to not add, negative to cound from end, null to append
 	 */
 	#php4
@@ -568,7 +563,7 @@ class HTML_Node {
 
 	/**
 	 * Find out if node has (a certain) parent
-	 * @param HTML_Node|string $tag Match against parent, string to match tag, object to fully match node, null to return if node has parent
+	 * @param DomNode|string $tag Match against parent, string to match tag, object to fully match node, null to return if node has parent
 	 * @param bool $recursive
 	 * @return bool
 	 */
@@ -588,7 +583,7 @@ class HTML_Node {
 
 	/**
 	 * Find out if node is parent of a certain tag
-	 * @param HTML_Node|string $tag Match against parent, string to match tag, object to fully match node
+	 * @param DomNode|string $tag Match against parent, string to match tag, object to fully match node
 	 * @param bool $recursive
 	 * @return bool
 	 * @see hasParent()
@@ -596,7 +591,7 @@ class HTML_Node {
 	function isParent($tag, $recursive = false) {
 		return ($this->hasParent($tag, $recursive) === ($tag !== null));
 	}
-	
+
 	/**
 	 * Find out if node is text
 	 * @return bool
@@ -604,7 +599,7 @@ class HTML_Node {
 	function isText() {
 		return false;
 	}
-	
+
 	/**
 	 * Find out if node is comment
 	 * @return bool
@@ -612,7 +607,7 @@ class HTML_Node {
 	function isComment() {
 		return false;
 	}
-	
+
 	/**
 	 * Find out if node is text or comment node
 	 * @return bool
@@ -623,7 +618,7 @@ class HTML_Node {
 
 	/**
 	 * Move node to other node
-	 * @param HTML_Node $to New parent, null if none
+	 * @param DomNode $to New parent, null if none
 	 * @param int $new_index Add child to parent at index if not present, null to not add, negative to cound from end
 	 * @internal Performs {@link changeParent()}
 	 */
@@ -638,7 +633,7 @@ class HTML_Node {
 
 	/**
 	 * Move childnodes to other node
-	 * @param HTML_Node $to New parent, null if none
+	 * @param DomNode $to New parent, null if none
 	 * @param int $new_index Add child to new node at index if not present, null to not add, negative to cound from end
 	 * @param int $start Index from child node where to start wrapping, 0 for first element
 	 * @param int $end Index from child node where to end wrapping, -1 for last element
@@ -677,7 +672,7 @@ class HTML_Node {
 			//		return $index;
 			//	}
 			//}
-			
+
 			foreach(array_keys($this->parent->children) as $k) {
 				if (!$this->parent->children[$k]->isTextOrComment()) {
 					++$index;
@@ -721,7 +716,7 @@ class HTML_Node {
 			//		return $index;
 			//	}
 			//}
-			
+
 			foreach(array_keys($this->parent->children) as $k) {
 				if (strcasecmp($this->tag, $this->parent->children[$k]->tag) === 0) {
 					++$index;
@@ -745,7 +740,7 @@ class HTML_Node {
 	/**
 	 * Get sibling node
 	 * @param int $offset Offset from current node
-	 * @return HTML_Node Null if not found
+	 * @return DomNode Null if not found
 	 */
 	function getSibling($offset = 1) {
 		$index = $this->index() + $offset;
@@ -759,7 +754,7 @@ class HTML_Node {
 	/**
 	 * Get node next to current
 	 * @param bool $skip_text_comments
-	 * @return HTML_Node Null if not found
+	 * @return DomNode Null if not found
 	 * @see getSibling()
 	 * @see getPreviousSibling()
 	 */
@@ -779,7 +774,7 @@ class HTML_Node {
 	/**
 	 * Get node previous to current
 	 * @param bool $skip_text_comments
-	 * @return HTML_Node Null if not found
+	 * @return DomNode Null if not found
 	 * @see getSibling()
 	 * @see getNextSibling()
 	 */
@@ -855,7 +850,7 @@ class HTML_Node {
 			$this->tag = (($this->tag_ns[0]) ? $this->tag_ns[0].':' : '').$tag;
 		}
 	}
-	
+
 	/**
 	 * Try to determine the encoding of the current tag
 	 * @return string|bool False if encoding could not be found
@@ -872,9 +867,9 @@ class HTML_Node {
 				return substr($enc, strpos($enc, "charset=")+8);
 			}
 		}
-		
+
 		return false;
-	}	
+	}
 
 	/**
 	 * Number of children in node
@@ -891,7 +886,7 @@ class HTML_Node {
 			//		++$count;
 			//	}
 			//}
-			
+
 			foreach(array_keys($this->children) as $k) {
 				if (!$this->children[$k]->isTextOrComment()) {
 					++$count;
@@ -903,7 +898,7 @@ class HTML_Node {
 
 	/**
 	 * Find node in children
-	 * @param HTML_Node $child
+	 * @param DomNode $child
 	 * @return int False if not found
 	 */
 	function findChild($child) {
@@ -912,7 +907,7 @@ class HTML_Node {
 
 	/**
 	 * Checks if node has another node as child
-	 * @param HTML_Node $child
+	 * @param DomNode $child
 	 * @return bool
 	 */
 	function hasChild($child) {
@@ -921,9 +916,9 @@ class HTML_Node {
 
 	/**
 	 * Get childnode
-	 * @param int|HTML_Node $child Index, negative to count from end
+	 * @param int|DomNode $child Index, negative to count from end
 	 * @param bool $ignore_text_comments Ignore text/comments with index calculation
-	 * @return HTML_Node
+	 * @return DomNode
 	 */
 	function &getChild($child, $ignore_text_comments = false) {
 		if (!is_int($child)) {
@@ -943,7 +938,7 @@ class HTML_Node {
 			//		$last = $c;
 			//	}
 			//}
-			
+
 			foreach(array_keys($this->children) as $k) {
 				if (!$this->children[$k]->isTextOrComment()) {
 					if ($count++ === $child) {
@@ -960,9 +955,9 @@ class HTML_Node {
 
 	/**
 	 * Add childnode
-	 * @param string|HTML_Node $tag Tagname or object
+	 * @param string|DomNode $tag Tagname or object
 	 * @param int $offset Position to insert node, negative to count from end, null to append
-	 * @return HTML_Node Added node
+	 * @return DomNode Added node
 	 */
 	#php4
 	#function &addChild($tag, &$offset) {
@@ -992,7 +987,7 @@ class HTML_Node {
 	/**
 	 * First child node
 	 * @param bool $ignore_text_comments Ignore text/comments with index calculation
-	 * @return HTML_Node
+	 * @return DomNode
 	 */
 	function &firstChild($ignore_text_comments = false) {
 		return $this->getChild(0, $ignore_text_comments);
@@ -1001,7 +996,7 @@ class HTML_Node {
 	/**
 	 * Last child node
 	 * @param bool $ignore_text_comments Ignore text/comments with index calculation
-	 * @return HTML_Node
+	 * @return DomNode
 	 */
 	function &lastChild($ignore_text_comments = false) {
 		return $this->getChild(-1, $ignore_text_comments);
@@ -1009,9 +1004,9 @@ class HTML_Node {
 
 	/**
 	 * Insert childnode
-	 * @param string|HTML_Node $tag Tagname or object
+	 * @param string|DomNode $tag Tagname or object
 	 * @param int $offset Position to insert node, negative to count from end, null to append
-	 * @return HTML_Node Added node
+	 * @return DomNode Added node
 	 * @see addChild();
 	 */
 	function &insertChild($tag, $index) {
@@ -1022,7 +1017,7 @@ class HTML_Node {
 	 * Add textnode
 	 * @param string $text
 	 * @param int $offset Position to insert node, negative to count from end, null to append
-	 * @return HTML_Node Added node
+	 * @return DomNode Added node
 	 * @see addChild();
 	 */
 	#php4
@@ -1038,7 +1033,7 @@ class HTML_Node {
 	 * Add comment node
 	 * @param string $text
 	 * @param int $offset Position to insert node, negative to count from end, null to append
-	 * @return HTML_Node Added node
+	 * @return DomNode Added node
 	 * @see addChild();
 	 */
 	#php4
@@ -1055,7 +1050,7 @@ class HTML_Node {
 	 * @param string $condition
 	 * @param bool True for <!--[if, false for <![if
 	 * @param int $offset Position to insert node, negative to count from end, null to append
-	 * @return HTML_Node Added node
+	 * @return DomNode Added node
 	 * @see addChild();
 	 */
 	#php4
@@ -1071,7 +1066,7 @@ class HTML_Node {
 	 * Add CDATA node
 	 * @param string $text
 	 * @param int $offset Position to insert node, negative to count from end, null to append
-	 * @return HTML_Node Added node
+	 * @return DomNode Added node
 	 * @see addChild();
 	 */
 	#php4
@@ -1087,7 +1082,7 @@ class HTML_Node {
 	 * Add doctype node
 	 * @param string $dtd
 	 * @param int $offset Position to insert node, negative to count from end, null to append
-	 * @return HTML_Node Added node
+	 * @return DomNode Added node
 	 * @see addChild();
 	 */
 	#php4
@@ -1105,7 +1100,7 @@ class HTML_Node {
 	 * @param string $text
 	 * @param array $attributes Array of attributes (array('attribute' => 'value'))
 	 * @param int $offset Position to insert node, negative to count from end, null to append
-	 * @return HTML_Node Added node
+	 * @return DomNode Added node
 	 * @see addChild();
 	 */
 	#php4
@@ -1123,7 +1118,7 @@ class HTML_Node {
 	 * @param string $text
 	 * @param array $attributes Array of attributes (array('attribute' => 'value'))
 	 * @param int $offset Position to insert node, negative to count from end, null to append
-	 * @return HTML_Node Added node
+	 * @return DomNode Added node
 	 * @see addChild();
 	 */
 	#php4
@@ -1137,7 +1132,7 @@ class HTML_Node {
 
 	/**
 	 * Delete a childnode
-	 * @param int|HTML_Node $child Child(index) to delete, negative to count from end
+	 * @param int|DomNode $child Child(index) to delete, negative to count from end
 	 * @param bool $soft_delete False to call {@link delete()} from child
 	 */
 	function deleteChild($child, $soft_delete = false) {
@@ -1154,7 +1149,7 @@ class HTML_Node {
 
 		//Rebuild indices
 		$tmp = array();
-		
+
 		//foreach($this->children as &$c) {
 		//	$tmp[] =& $c;
 		//}
@@ -1166,16 +1161,16 @@ class HTML_Node {
 
 	/**
 	 * Wrap node
-	 * @param string|HTML_Node $node Wrapping node, string to create new element node
+	 * @param string|DomNode $node Wrapping node, string to create new element node
 	 * @param int $wrap_index Index to insert current node in wrapping node, -1 to append
 	 * @param int $node_index Index to insert wrapping node, null to keep at same position
-	 * @return HTML_Node Wrapping node
+	 * @return DomNode Wrapping node
 	 */
 	function wrap($node, $wrap_index = -1, $node_index = null) {
 		if ($node_index === null) {
 			$node_index = $this->index();
 		}
-		
+
 		if (!is_object($node)) {
 			$node = $this->parent->addChild($node, $node_index);
 		} elseif ($node->parent !== $this->parent) {
@@ -1188,12 +1183,12 @@ class HTML_Node {
 
 	/**
 	 * Wrap childnodes
-	 * @param string|HTML_Node $node Wrapping node, string to create new element node
+	 * @param string|DomNode $node Wrapping node, string to create new element node
 	 * @param int $start Index from child node where to start wrapping, 0 for first element
 	 * @param int $end Index from child node where to end wrapping, -1 for last element
 	 * @param int $wrap_index Index to insert in wrapping node, -1 to append
 	 * @param int $node_index Index to insert current node, null to keep at same position
-	 * @return HTML_Node Wrapping node
+	 * @return DomNode Wrapping node
 	 */
 	function wrapInner($node, $start = 0, $end = -1, $wrap_index = -1, $node_index = null) {
 		if ($end < 0) {
@@ -1513,7 +1508,7 @@ class HTML_Node {
 
 		return $res;
 	}
-	
+
 	/**
 	 * Finds children using the {$link match()} function
 	 * @param $conditions See {$link match()}
@@ -1656,7 +1651,7 @@ class HTML_Node {
 					$match['case_sensitive'] = false;
 				}
 			}
-			
+
 			if (is_string($match['value']) && (!$match['case_sensitive'])) {
 				$match['value'] = strtolower($match['value']);
 			}
@@ -1911,7 +1906,7 @@ class HTML_Node {
 	 * false to return array, int to return match at index, negative int to count from end
 	 * @param bool|int $recursive
 	 * @param bool $check_self Include this node in search or only search childnodes
-	 * @return array|HTML_Node
+	 * @return array|DomNode
 	 */
 	function select($query = '*', $index = false, $recursive = true, $check_self = false) {
 		$s = new $this->selectClass($this, $query, $check_self, $recursive);
@@ -2239,7 +2234,7 @@ class HTML_Node {
 /**
  * Node subclass for text
  */
-class HTML_NODE_TEXT extends HTML_Node {
+class TextNode extends DomNode {
 	#php4 Compatibility with PHP4, this gets changed to a regular var in release tool
 	#static $NODE_TYPE = self::NODE_TEXT;
 	#php4e
@@ -2255,18 +2250,18 @@ class HTML_NODE_TEXT extends HTML_Node {
 
 	/**
 	 * Class constructor
-	 * @param HTML_Node $parent
+	 * @param DomNode $parent
 	 * @param string $text
 	 */
 	function __construct($parent, $text = '') {
 		$this->parent = $parent;
 		$this->text = $text;
 	}
-	
+
 	#php4 PHP4 class constructor compatibility
-	#function HTML_NODE_TEXT($parent, $text = '') {return $this->__construct($parent, $text);}
+	#function TextNode($parent, $text = '') {return $this->__construct($parent, $text);}
 	#php4e
-	
+
 	function isText() {return true;}
 	function isTextOrComment() {return true;}
 	protected function filter_element() {return false;}
@@ -2279,7 +2274,7 @@ class HTML_NODE_TEXT extends HTML_Node {
 /**
  * Node subclass for comments
  */
-class HTML_NODE_COMMENT extends HTML_Node {
+class CommentNode extends DomNode {
 	#php4 Compatibility with PHP4, this gets changed to a regular var in release tool
 	#static $NODE_TYPE = self::NODE_COMMENT;
 	#php4e
@@ -2295,20 +2290,20 @@ class HTML_NODE_COMMENT extends HTML_Node {
 
 	/**
 	 * Class constructor
-	 * @param HTML_Node $parent
+	 * @param DomNode $parent
 	 * @param string $text
 	 */
 	function __construct($parent, $text = '') {
 		$this->parent = $parent;
 		$this->text = $text;
 	}
-	
+
 	#php4 PHP4 class constructor compatibility
-	#function HTML_NODE_COMMENT($parent, $text = '') {return $this->__construct($parent, $text);}
+	#function CommentNode($parent, $text = '') {return $this->__construct($parent, $text);}
 	#php4e
-	
+
 	function isComment() {return true;}
-	function isTextOrComment() {return true;}	
+	function isTextOrComment() {return true;}
 	protected function filter_element() {return false;}
 	protected function filter_comment() {return true;}
 	function toString_attributes() {return '';}
@@ -2319,7 +2314,7 @@ class HTML_NODE_COMMENT extends HTML_Node {
 /**
  * Node subclass for conditional tags
  */
-class HTML_NODE_CONDITIONAL extends HTML_Node {
+class ConditionalTagNode extends DomNode {
 	#php4 Compatibility with PHP4, this gets changed to a regular var in release tool
 	#static $NODE_TYPE = self::NODE_CONDITIONAL;
 	#php4e
@@ -2335,7 +2330,7 @@ class HTML_NODE_CONDITIONAL extends HTML_Node {
 
 	/**
 	 * Class constructor
-	 * @param HTML_Node $parent
+	 * @param DomNode $parent
 	 * @param string $condition e.g. "if IE"
 	 * @param bool $hidden <!--[if if true, <![if if false
 	 */
@@ -2344,11 +2339,11 @@ class HTML_NODE_CONDITIONAL extends HTML_Node {
 		$this->hidden = $hidden;
 		$this->condition = $condition;
 	}
-	
+
 	#php4 PHP4 class constructor compatibility
-	#function HTML_NODE_CONDITIONAL($parent, $condition = '', $hidden = true) {return $this->__construct($parent, $condition, $hidden);}
+	#function ConditionalTagNode($parent, $condition = '', $hidden = true) {return $this->__construct($parent, $condition, $hidden);}
 	#php4e
-	
+
 	protected function filter_element() {return false;}
 	function toString_attributes() {return '';}
 	function toString($attributes = true, $recursive = true, $content_only = false) {
@@ -2371,7 +2366,7 @@ class HTML_NODE_CONDITIONAL extends HTML_Node {
 /**
  * Node subclass for CDATA tags
  */
-class HTML_NODE_CDATA extends HTML_Node {
+class CdataNode extends DomNode {
 	#php4 Compatibility with PHP4, this gets changed to a regular var in release tool
 	#static $NODE_TYPE = self::NODE_CDATA;
 	#php4e
@@ -2387,18 +2382,18 @@ class HTML_NODE_CDATA extends HTML_Node {
 
 	/**
 	 * Class constructor
-	 * @param HTML_Node $parent
+	 * @param DomNode $parent
 	 * @param string $text
 	 */
 	function __construct($parent, $text = '') {
 		$this->parent = $parent;
 		$this->text = $text;
 	}
-	
+
 	#php4 PHP4 class constructor compatibility
-	#function HTML_NODE_CDATA($parent, $text = '') {return $this->__construct($parent, $text);}
+	#function CdataNode($parent, $text = '') {return $this->__construct($parent, $text);}
 	#php4e
-	
+
 	protected function filter_element() {return false;}
 	function toString_attributes() {return '';}
 	function toString_content($attributes = true, $recursive = true, $content_only = false) {return $this->text;}
@@ -2408,7 +2403,7 @@ class HTML_NODE_CDATA extends HTML_Node {
 /**
  * Node subclass for doctype tags
  */
-class HTML_NODE_DOCTYPE extends HTML_Node {
+class DoctypeNode extends DomNode {
 	#php4 Compatibility with PHP4, this gets changed to a regular var in release tool
 	#static $NODE_TYPE = self::NODE_DOCTYPE;
 	#php4e
@@ -2424,16 +2419,16 @@ class HTML_NODE_DOCTYPE extends HTML_Node {
 
 	/**
 	 * Class constructor
-	 * @param HTML_Node $parent
+	 * @param DomNode $parent
 	 * @param string $dtd
 	 */
 	function __construct($parent, $dtd = '') {
 		$this->parent = $parent;
 		$this->dtd = $dtd;
 	}
-	
+
 	#php4 PHP4 class constructor compatibility
-	#function HTML_NODE_DOCTYPE($parent, $dtd = '') {return $this->__construct($parent, $dtd);}
+	#function DoctypeNode($parent, $dtd = '') {return $this->__construct($parent, $dtd);}
 	#php4e
 
 	protected function filter_element() {return false;}
@@ -2445,7 +2440,7 @@ class HTML_NODE_DOCTYPE extends HTML_Node {
 /**
  * Node subclass for embedded tags like xml, php and asp
  */
-class HTML_NODE_EMBEDDED extends HTML_Node {
+class EmbeddedNode extends DomNode {
 
 	/**
 	 * @var string
@@ -2461,7 +2456,7 @@ class HTML_NODE_EMBEDDED extends HTML_Node {
 
 	/**
 	 * Class constructor
-	 * @param HTML_Node $parent
+	 * @param DomNode $parent
 	 * @param string $tag_char {@link $tag_char}
 	 * @param string $tag {@link $tag}
 	 * @param string $text
@@ -2478,9 +2473,9 @@ class HTML_NODE_EMBEDDED extends HTML_Node {
 		$this->attributes = $attributes;
 		$this->self_close_str = $tag_char;
 	}
-	
+
 	#php4 PHP4 class constructor compatibility
-	#function HTML_NODE_EMBEDDED($parent, $tag_char = '', $tag = '', $text = '', $attributes = array()) {return $this->__construct($parent, $tag_char, $tag, $text, $attributes);}
+	#function EmbeddedNode($parent, $tag_char = '', $tag = '', $text = '', $attributes = array()) {return $this->__construct($parent, $tag_char, $tag, $text, $attributes);}
 	#php4e
 
 	protected function filter_element() {return false;}
@@ -2497,7 +2492,7 @@ class HTML_NODE_EMBEDDED extends HTML_Node {
 /**
  * Node subclass for "?" tags, like php and xml
  */
-class HTML_NODE_XML extends HTML_NODE_EMBEDDED {
+class XmlNode extends EmbeddedNode {
 	#php4 Compatibility with PHP4, this gets changed to a regular var in release tool
 	#static $NODE_TYPE = self::NODE_XML;
 	#php4e
@@ -2507,7 +2502,7 @@ class HTML_NODE_XML extends HTML_NODE_EMBEDDED {
 
 	/**
 	 * Class constructor
-	 * @param HTML_Node $parent
+	 * @param DomNode $parent
 	 * @param string $tag {@link $tag}
 	 * @param string $text
 	 * @param array $attributes array('attr' => 'val')
@@ -2515,16 +2510,16 @@ class HTML_NODE_XML extends HTML_NODE_EMBEDDED {
 	function __construct($parent, $tag = 'xml', $text = '', $attributes = array()) {
 		return parent::__construct($parent, '?', $tag, $text, $attributes);
 	}
-	
+
 	#php4 PHP4 class constructor compatibility
-	#function HTML_NODE_XML($parent, $tag = 'xml', $text = '', $attributes = array()) {return $this->__construct($parent, $tag, $text, $attributes);}
+	#function XmlNode($parent, $tag = 'xml', $text = '', $attributes = array()) {return $this->__construct($parent, $tag, $text, $attributes);}
 	#php4e
 }
 
 /**
  * Node subclass for asp tags
  */
-class HTML_NODE_ASP extends HTML_NODE_EMBEDDED {
+class AspEmbeddedNode extends EmbeddedNode {
 	#php4 Compatibility with PHP4, this gets changed to a regular var in release tool
 	#static $NODE_TYPE = self::NODE_ASP;
 	#php4e
@@ -2534,7 +2529,7 @@ class HTML_NODE_ASP extends HTML_NODE_EMBEDDED {
 
 	/**
 	 * Class constructor
-	 * @param HTML_Node $parent
+	 * @param DomNode $parent
 	 * @param string $tag {@link $tag}
 	 * @param string $text
 	 * @param array $attributes array('attr' => 'val')
@@ -2542,9 +2537,9 @@ class HTML_NODE_ASP extends HTML_NODE_EMBEDDED {
 	function __construct($parent, $tag = '', $text = '', $attributes = array()) {
 		return parent::__construct($parent, '%', $tag, $text, $attributes);
 	}
-	
+
 	#php4 PHP4 class constructor compatibility
-	#function HTML_NODE_ASP($parent, $tag = '', $text = '', $attributes = array()) {return $this->__construct($parent, $tag, $text, $attributes);}
+	#function AspEmbeddedNode($parent, $tag = '', $text = '', $attributes = array()) {return $this->__construct($parent, $tag, $text, $attributes);}
 	#php4e
 }
 

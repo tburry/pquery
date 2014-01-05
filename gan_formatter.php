@@ -1,10 +1,12 @@
 <?php
 /**
  * @author Niels A.D.
- * @package Ganon
- * @link http://code.google.com/p/ganon/
- * @license http://dev.perl.org/licenses/artistic.html Artistic License
+ * @author Todd Burry <todd@vanillaforums.com>
+ * @package pQuery
+ * @license http://opensource.org/licenses/LGPL-2.1 LGPL-2.1
  */
+
+namespace pQuery;
 
 /**
  * Indents text
@@ -27,12 +29,12 @@ function indent_text($text, $indent, $indent_string = '  ') {
  * Used like:
  * <code>
  * <?php
- *   $formatter = new HTML_Formatter();
+ *   $formatter = new HTMLFormatter();
  *   $formatter->format($root);
  * ?>
  * </code>
  */
-class HTML_Formatter {
+class HTMLFormatter {
 
 	/**
 	 * Determines which elements start on a new line and which function as block
@@ -134,7 +136,7 @@ class HTML_Formatter {
 	}
 	
 	#php4 PHP4 class constructor compatibility
-	#function HTML_Formatter($options = array()) {return $this->__construct($options);}
+	#function HTMLFormatter($options = array()) {return $this->__construct($options);}
 	#php4e
 
 	/**
@@ -147,7 +149,7 @@ class HTML_Formatter {
 
 	/**
 	 * Minifies HTML / removes unneeded whitespace
-	 * @param HTML_Node $root
+	 * @param DomNode $root
 	 * @param bool $strip_comments
 	 * @param bool $recursive
 	 */
@@ -170,7 +172,7 @@ class HTML_Formatter {
 
 	/**
 	 * Minifies javascript using JSMin+
-	 * @param HTML_Node $root
+	 * @param DomNode $root
 	 * @param string $indent_string
 	 * @param bool $wrap_comment Wrap javascript in HTML comments (<!-- ~text~ //-->)
 	 * @param bool $recursive
@@ -227,7 +229,7 @@ class HTML_Formatter {
 
 	/**
 	 * Formats HTML
-	 * @param HTML_Node $root
+	 * @param DomNode $root
 	 * @param bool $recursive
 	 * @access private
 	 */
@@ -352,7 +354,7 @@ class HTML_Formatter {
 
 	/**
 	 * Formats HTML/Javascript
-	 * @param HTML_Node $root
+	 * @param DomNode $root
 	 * @see format_html()
 	 */
 	function format(&$node) {

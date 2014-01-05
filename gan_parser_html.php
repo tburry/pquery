@@ -1,18 +1,12 @@
 <?php
 /**
  * @author Niels A.D.
- * @package Ganon
- * @link http://code.google.com/p/ganon/
- * @license http://dev.perl.org/licenses/artistic.html Artistic License
+ * @author Todd Burry <todd@vanillaforums.com>
+ * @package pQuery
+ * @license http://opensource.org/licenses/LGPL-2.1 LGPL-2.1
  */
- 
-#!! <- Ignore when converting to single file
-if (!defined('GANON_NO_INCLUDES')) {
-	include_once('gan_tokenizer.php');
-	include_once('gan_node_html.php');
-	include_once('gan_selector_html.php');
-}
-#!
+
+namespace pQuery;
 
 /**
  * Parses a HTML document
@@ -20,7 +14,7 @@ if (!defined('GANON_NO_INCLUDES')) {
  * Functionality can be extended by overriding functions or adjusting the tag map.
  * Document may contain small errors, the parser will try to recover and resume parsing.
  */
-class HTML_Parser_Base extends Tokenizer_Base {
+class HtmlParserBase extends TokenizerBase {
 
 	/**
 	 * Tag open token, used for "<"
@@ -49,7 +43,7 @@ class HTML_Parser_Base extends Tokenizer_Base {
 
 	/**
 	 * Sets HTML identifiers, tags/attributes are considered identifiers
-	 * @see Tokenizer_Base::$identifiers
+	 * @see TokenizerBase::$identifiers
 	 * @access private
 	 */
 	var $identifiers = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890:-_!?%';
@@ -62,7 +56,7 @@ class HTML_Parser_Base extends Tokenizer_Base {
 
 	/**
 	 * Map characters to match their tokens
-	 * @see Tokenizer_Base::$custom_char_map
+	 * @see TokenizerBase::$custom_char_map
 	 * @access private
 	 */
 	var $custom_char_map = array(
@@ -79,9 +73,9 @@ class HTML_Parser_Base extends Tokenizer_Base {
 		parent::__construct($doc, $pos);
 		$this->parse_all();
 	}
-	
+
 	#php4 PHP4 class constructor compatibility
-	#function HTML_Parser_Base($doc = '', $pos = 0) {return $this->__construct($doc, $pos);}
+	#function HtmlParserBase($doc = '', $pos = 0) {return $this->__construct($doc, $pos);}
 	#php4e
 
 	/**
@@ -463,7 +457,7 @@ class HTML_Parser_Base extends Tokenizer_Base {
 	function parse_all() {
 		$this->errors = array();
 		$this->status['last_pos'] = -1;
-		
+
 		if (($this->token === self::TOK_TAG_OPEN) || ($this->next_pos('<', false) === self::TOK_UNKNOWN)) {
 			do {
 				if (!$this->parse_tag()) {
@@ -482,14 +476,14 @@ class HTML_Parser_Base extends Tokenizer_Base {
 /**
  * Parses a HTML document into a HTML DOM
  */
-class HTML_Parser extends HTML_Parser_Base {
+class HtmlParser extends HtmlParserBase {
 
 	/**
 	 * Root object
 	 * @internal If string, then it will create a new instance as root
-	 * @var HTML_Node
+	 * @var DomNode
 	 */
-	var $root = 'HTML_Node';
+	var $root = 'pQuery\\DomNode';
 
 	/**
 	 * Current parsing hierarchy
@@ -530,7 +524,7 @@ class HTML_Parser extends HTML_Parser_Base {
 	 * Class constructor
 	 * @param string $doc Document to be tokenized
 	 * @param int $pos Position to start parsing
-	 * @param HTML_Node $root Root node, null to auto create
+	 * @param DomNode $root Root node, null to auto create
 	 */
 	function __construct($doc = '', $pos = 0, $root = null) {
 		if ($root === null) {
@@ -540,9 +534,9 @@ class HTML_Parser extends HTML_Parser_Base {
 
 		parent::__construct($doc, $pos);
 	}
-	
+
 	#php4 PHP4 class constructor compatibility
-	#function HTML_Parser($doc = '', $pos = 0, $root = null) {return $this->__construct($doc, $pos, $root);}
+	#function HtmlParser($doc = '', $pos = 0, $root = null) {return $this->__construct($doc, $pos, $root);}
 	#php4e
 
 	/**
@@ -555,7 +549,7 @@ class HTML_Parser extends HTML_Parser_Base {
 	}
 
 	/**
-	 * Class magic toString method, performs {@link HTML_Node::toString()}
+	 * Class magic toString method, performs {@link DomNode::toString()}
 	 * @return string
 	 * @access private
 	 */
@@ -565,7 +559,7 @@ class HTML_Parser extends HTML_Parser_Base {
 
 	/**
 	 * Performs a css select query on the root node
-	 * @see HTML_Node::select()
+	 * @see DomNode::select()
 	 * @return array
 	 */
 	function select($query = '*', $index = false, $recursive = true, $check_self = false) {
@@ -586,7 +580,7 @@ class HTML_Parser extends HTML_Parser_Base {
 
 		if ($self_close) {
 			if ($this->status['closing_tag']) {
-			
+
 				//$c = end($this->hierarchy)->children
 				$c = $this->hierarchy[count($this->hierarchy) - 1]->children;
 				$found = false;
@@ -597,16 +591,16 @@ class HTML_Parser extends HTML_Parser_Base {
 							$c[$i + 1]->changeParent($c[$i], $index);
 						}
 						$c[$i]->self_close = false;
-						
+
 						$found = true;
 						break;
 					}
 				}
-				
+
 				if (!$found) {
 					$this->addError('Closing tag "'.$this->status['tag_name'].'" which is not open');
 				}
-			
+
 			} elseif ($this->status['tag_name'][0] === '?') {
 				//end($this->hierarchy)->addXML($this->status['tag_name'], '', $this->status['attributes']);
 				$index = null; //Needs to be passed by ref
@@ -644,7 +638,7 @@ class HTML_Parser extends HTML_Parser_Base {
 		} else {
 			//$this->hierarchy[] = end($this->hierarchy)->addChild($this->status);
 			$index = null; //Needs to be passed by ref
-			$this->hierarchy[] = $this->hierarchy[count($this->hierarchy) - 1]->addChild($this->status, $index);	
+			$this->hierarchy[] = $this->hierarchy[count($this->hierarchy) - 1]->addChild($this->status, $index);
 		}
 	}
 
@@ -768,7 +762,7 @@ class HTML_Parser extends HTML_Parser_Base {
 /**
  * HTML5 specific parser (adds support for omittable closing tags)
  */
-class HTML_Parser_HTML5 extends HTML_Parser {
+class Html5Parser extends HtmlParser {
 
 	/**
 	 * Tags with ommitable closing tags
@@ -827,7 +821,7 @@ class HTML_Parser_HTML5 extends HTML_Parser {
 
 		if (! ($self_close || $this->status['closing_tag'])) {
 			//$tag_prev = strtolower(end($this->hierarchy)->tag);
-			$tag_prev = strtolower($this->hierarchy[count($this->hierarchy) - 1]->tag);			
+			$tag_prev = strtolower($this->hierarchy[count($this->hierarchy) - 1]->tag);
 			if (isset($this->tags_optional_close[$tag_curr]) && isset($this->tags_optional_close[$tag_curr][$tag_prev])) {
 				array_pop($this->hierarchy);
 			}

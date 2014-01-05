@@ -10,10 +10,10 @@
  * Returns HTML DOM from string
  * @param string $str
  * @param bool $return_root Return root node or return parser object
- * @return HTML_Parser_HTML5|HTML_Node
+ * @return Html5Parser|DomNode
  */
 function str_get_dom($str, $return_root = true) {
-	$a = new HTML_Parser_HTML5($str);
+	$a = new Html5Parser($str);
 	return (($return_root) ? $a->root : $a);
 }
 
@@ -23,7 +23,7 @@ function str_get_dom($str, $return_root = true) {
  * @param bool $return_root Return root node or return parser object
  * @param bool $use_include_path Use include path search in file_get_contents
  * @param resource $context Context resource used in file_get_contents (PHP >= 5.0.0)
- * @return HTML_Parser_HTML5|HTML_Node
+ * @return Html5Parser|DomNode
  */
 function file_get_dom($file, $return_root = true, $use_include_path = false, $context = null) {
 	if (version_compare(PHP_VERSION, '5.0.0', '>='))
@@ -33,18 +33,18 @@ function file_get_dom($file, $return_root = true, $use_include_path = false, $co
 			trigger_error('Context parameter not supported in this PHP version');
 		$f = file_get_contents($file, $use_include_path);
 	}
-	
+
 	return (($f === false) ? false : str_get_dom($f, $return_root));
 }
 
 /**
  * Format/beautify DOM
- * @param HTML_Node $root
- * @param array $options Extra formatting options {@link HTML_Formatter::$options}
+ * @param DomNode $root
+ * @param array $options Extra formatting options {@link Formatter::$options}
  * @return bool
  */
 function dom_format(&$root, $options = array()) {
-	$formatter = new HTML_Formatter($options);
+	$formatter = new Formatter($options);
 	return $formatter->format($root);
 }
 
@@ -60,7 +60,7 @@ if (version_compare(PHP_VERSION, '5.0.0', '<')) {
 		for ($i = 0; $i < $size; $i++) {
 			$res[] = $string[$i];
 		}
-		
+
 		return $res;
 	}
 }
@@ -77,7 +77,7 @@ if (version_compare(PHP_VERSION, '5.2.0', '<')) {
 		foreach($keys as $k) {
 			$res[$k] = $value;
 		}
-		
+
 		return $res;
 	}
 }

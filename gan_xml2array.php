@@ -1,21 +1,17 @@
 <?php
 /**
  * @author Niels A.D.
- * @package Ganon
- * @link http://code.google.com/p/ganon/
- * @license http://dev.perl.org/licenses/artistic.html Artistic License
+ * @author Todd Burry <todd@vanillaforums.com>
+ * @package pQuery
+ * @license http://opensource.org/licenses/LGPL-2.1 LGPL-2.1
  */
- 
-#!! <- Ignore when converting to single file
-if (!defined('GANON_NO_INCLUDES')) {
-	include_once('gan_parser_html.php');
-}
-#!
+
+namespace pQuery;
 
 /**
  * Converts a XML document to an array
  */
-class XML_Parser_Array extends HTML_Parser_Base {
+class XML2ArrayParser extends HtmlParserBase {
 
 	/**
 	 * Holds the document structure

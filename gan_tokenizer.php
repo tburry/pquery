@@ -1,10 +1,12 @@
 <?php
 /**
  * @author Niels A.D.
- * @package Ganon
- * @link http://code.google.com/p/ganon/
- * @license http://dev.perl.org/licenses/artistic.html Artistic License
+ * @author Todd Burry <todd@vanillaforums.com>
+ * @package pQuery
+ * @license http://opensource.org/licenses/LGPL-2.1 LGPL-2.1
  */
+
+namespace pQuery;
 
 /**
  * Converts a document into tokens
@@ -16,7 +18,7 @@
  * Use like:
  * <code>
  * <?php
- *  $a = new Tokenizer_Base('hello word');
+ *  $a = new TokenizerBase('hello word');
  *  while ($a->next() !== $a::TOK_NULL) {
  *    echo $a->token, ': ',$a->getTokenString(), "<br>\n";
  *  }
@@ -26,7 +28,7 @@
  * @internal The tokenizer works with a character map that connects a certain
  * character to a certain function/token. This class is build with speed in mind.
  */
-class Tokenizer_Base {
+class TokenizerBase {
 
 	/**
 	 * NULL Token, used at end of document (parsing should stop after this token)
@@ -146,7 +148,7 @@ class Tokenizer_Base {
 	 * @access private
 	 */
 	var $char_map = array();
-	
+
 	/**
 	 * All errors found while parsing the document
 	 * @var array
@@ -167,9 +169,9 @@ class Tokenizer_Base {
 
 		$this->setDoc($doc, $pos);
 	}
-	
+
 	#php4 PHP4 class constructor compatibility
-	#function Tokenizer_Base($doc = '', $pos = 0) {return $this->__construct($doc, $pos);}
+	#function TokenizerBase($doc = '', $pos = 0) {return $this->__construct($doc, $pos);}
 	#php4e
 
 	/**
@@ -337,7 +339,7 @@ class Tokenizer_Base {
 			}
 		}
 	}
-	
+
 	/**
 	 * Add error to the array and appends current position
 	 * @param string $error
@@ -519,7 +521,7 @@ class Tokenizer_Base {
 			return ($this->token = self::TOK_NULL);
 		}
 	}
-	
+
 	/**
 	 * Expect a specific token or character. Adds error if token doesn't match.
 	 * @param string|int $token Character or token to expect
@@ -536,7 +538,7 @@ class Tokenizer_Base {
 				$this->next_no_whitespace();
 			}
 		}
-		
+
 		if (is_int($token)) {
 			if (($this->token !== $token) && ((!$try_next) || ((($try_next === 1) && ($this->next() !== $token)) || (($try_next === true) && ($this->next_no_whitespace() !== $token))))) {
 				$this->addError('Unexpected "'.$this->getTokenString().'"');
