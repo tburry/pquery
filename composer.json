@@ -1,0 +1,10 @@
+{
+   "name": "vanilla/pquery",
+   "description": "A jQuery like html dom parser written php.",
+   "autoload": {
+      "classmap": ["."]
+   },
+   "require-dev": {
+       "htmlawed/htmlawed": "dev-master"
+   }
+}

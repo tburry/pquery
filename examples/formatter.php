@@ -25,15 +25,15 @@
 	$html->select('html', 0)->detach(true);
 
 	//Minified version
-	HTML_Formatter::minify_html($html);
+	pQuery\HtmlFormatter::minify_html($html);
 	echo "$html\n";
 ?>
-	
+
 <h1>Formatted HTML:</h1>
 
 <?php
 	//Formatted version
-	$formatter = new HTML_Formatter(array('sort_attributes' => false, 'attributes_case' => CASE_UPPER));
+	$formatter = new pQuery\HtmlFormatter(array('sort_attributes' => false, 'attributes_case' => CASE_UPPER));
 	$formatter->format($html);
 	echo "$html\n";
 ?>

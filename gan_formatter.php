@@ -29,12 +29,12 @@ function indent_text($text, $indent, $indent_string = '  ') {
  * Used like:
  * <code>
  * <?php
- *   $formatter = new HTMLFormatter();
+ *   $formatter = new HtmlFormatter();
  *   $formatter->format($root);
  * ?>
  * </code>
  */
-class HTMLFormatter {
+class HtmlFormatter {
 
 	/**
 	 * Determines which elements start on a new line and which function as block
@@ -111,7 +111,7 @@ class HTMLFormatter {
 	 * Other formatting options
 	 * @var array
 	 */
-	var $options = array(
+	public $options = array(
 		'img_alt' => '',
 		'self_close_str' => null,
 		'attribute_shorttag' => false,
@@ -133,10 +133,16 @@ class HTMLFormatter {
 	 */
 	function __construct($options = array()) {
 		$this->options = array_merge($this->options, $options);
+
+      if (isset($options['indent_str']))
+         $this->indent_string = $options['indent_str'];
+
+      if (isset($options['linebreak_str']))
+         $this->linebreak_string = $options['linebreak_str'];
 	}
-	
+
 	#php4 PHP4 class constructor compatibility
-	#function HTMLFormatter($options = array()) {return $this->__construct($options);}
+	#function HtmlFormatter($options = array()) {return $this->__construct($options);}
 	#php4e
 
 	/**
@@ -209,7 +215,7 @@ class HTMLFormatter {
 				}
 
 				if (trim($text)) {
-					$text = JSMinPlus::minify($text);
+					$text = \JSMinPlus::minify($text);
 					if ($wrap_comment) {
 						$text = "<!--\n".$text."\n//-->";
 					}
@@ -248,8 +254,8 @@ class HTMLFormatter {
 		if (isset($this->options['attributes_case']) && $this->options['attributes_case']) {
 			$root->attributes = array_change_key_case($root->attributes, $this->options['attributes_case']);
 			$root->attributes_ns = null;
-		}	
-	
+		}
+
 		if (isset($this->options['sort_attributes']) && $this->options['sort_attributes']) {
 			if ($this->options['sort_attributes'] === 'reverse') {
 				krsort($root->attributes);
@@ -348,7 +354,7 @@ class HTMLFormatter {
 			$prev_tag = $n_tag;
 			$prev_asblock = $as_block;
 		}
-		
+
 		return true;
 	}
 

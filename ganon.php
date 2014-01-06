@@ -3,8 +3,11 @@
  * @author Niels A.D.
  * @package Ganon
  * @link http://code.google.com/p/ganon/
- * @license http://dev.perl.org/licenses/artistic.html Artistic License
+ * @license http://opensource.org/licenses/LGPL-2.1 LGPL-2.1
  */
+
+use pQuery\Html5Parser;
+use pQuery\HtmlFormatter;
 
 /**
  * Returns HTML DOM from string
@@ -44,7 +47,7 @@ function file_get_dom($file, $return_root = true, $use_include_path = false, $co
  * @return bool
  */
 function dom_format(&$root, $options = array()) {
-	$formatter = new Formatter($options);
+	$formatter = new HtmlFormatter($options);
 	return $formatter->format($root);
 }
 
@@ -85,6 +88,7 @@ if (version_compare(PHP_VERSION, '5.2.0', '<')) {
 #!! <- Ignore when converting to single file
 if (!defined('GANON_NO_INCLUDES')) {
 	define('GANON_NO_INCLUDES', true);
+    include_once('IQuery.php');
 	include_once('gan_tokenizer.php');
 	include_once('gan_parser_html.php');
 	include_once('gan_node_html.php');

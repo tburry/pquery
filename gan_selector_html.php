@@ -273,7 +273,7 @@ class CSSQueryTokenizer extends TokenizerBase {
 /**
  * Performs a css select query on HTML nodes
  */
-class HTMLSelector {
+class HtmlSelector {
 
 	/**
 	 * Parser object
@@ -343,7 +343,7 @@ class HTMLSelector {
 	}
 
 	#php4 PHP4 class constructor compatibility
-	#function HTMLSelector($root, $query = '*', $search_root = false, $search_recursive = true, $parser = null) {return $this->__construct($root, $query, $search_root, $search_recursive, $parser);}
+	#function HtmlSelector($root, $query = '*', $search_root = false, $search_recursive = true, $parser = null) {return $this->__construct($root, $query, $search_root, $search_recursive, $parser);}
 	#php4e
 
 	/**

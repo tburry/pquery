@@ -12,7 +12,7 @@ namespace pQuery;
  * Holds (x)html/xml tag information like tag name, attributes,
  * parent, children, self close, etc.
  */
-class DomNode {
+class DomNode implements IQuery {
 
 	/**
 	 * Element Node, used for regular elements
@@ -63,7 +63,7 @@ class DomNode {
 	 * @var string
 	 * @see select()
 	 */
-	var $selectClass = 'pQuery\\HTMLSelector';
+	var $selectClass = 'pQuery\\HtmlSelector';
 	/**
 	 * Name of the parser class
 	 * @var string
@@ -419,8 +419,11 @@ class DomNode {
 	 * @see toString()
 	 * @return string
 	 */
-	function html() {
-		return $this->toString();
+	function html($value = null) {
+      if ($value !== null) {
+         $this->setInnerText($value);
+      }
+		return $this->getInnerText();
 	}
 
 	/**
@@ -965,8 +968,16 @@ class DomNode {
 	#php5
 	function &addChild($tag, &$offset = null) {
 	#php5e
-		if (!is_object($tag)) {
-			$tag = new $this->childClass($tag, $this);
+        if (is_array($tag)) {
+            $tag = new $this->childClass($tag, $this);
+        } elseif (!is_object($tag)) {
+            $nodes = $this->createNodes($tag);
+            $tag = array_shift($nodes);
+
+            if ($tag && $tag->parent !== $this) {
+                $index = false;
+                $tag->changeParent($this, $index);
+            }
 		} elseif ($tag->parent !== $this) {
 			$index = false; //Needs to be passed by ref
 			$tag->changeParent($this, $index);
@@ -1454,7 +1465,7 @@ class DomNode {
 				$class .= ' '.$c;
 			}
 		}
-		 $this->class = $class;
+		 $this->class = trim($class);
 	}
 
 	/**
@@ -1899,6 +1910,17 @@ class DomNode {
 		return $this->getChildrenByAttribute('name', $name, 'equals', 'total', $recursive);
 	}
 
+    /**
+     * Performs a css query on the node.
+     * @param string $query
+     * @return IQuery Returns the matching nodes from the query.
+     */
+    public function query($query = '*') {
+        $select = $this->select($query);
+        $result = new \pQuery((array)$select);
+        return $result;
+    }
+
 	/**
 	 * Performs css query on node
 	 * @param string $query
@@ -1906,7 +1928,7 @@ class DomNode {
 	 * false to return array, int to return match at index, negative int to count from end
 	 * @param bool|int $recursive
 	 * @param bool $check_self Include this node in search or only search childnodes
-	 * @return array|DomNode
+	 * @return DomNode
 	 */
 	function select($query = '*', $index = false, $recursive = true, $check_self = false) {
 		$s = new $this->selectClass($this, $query, $check_self, $recursive);
@@ -1919,7 +1941,7 @@ class DomNode {
 				$index += count($res);
 			}
 			return ($index < count($res)) ? $res[$index] : null;
-		} else {
+        } else {
 			return $res;
 		}
 	}
@@ -2229,6 +2251,169 @@ class DomNode {
 	protected function filter_comment() {
 		return false;
 	}
+
+    public function after($content) {
+        $offset = $this->index() + 1;
+        $parent = $this->parent;
+        $nodes = $this->createNodes($content);
+
+        foreach ($nodes as $node) {
+            $node->changeParent($parent, $offset);
+        }
+        return $this;
+    }
+
+    /**
+     * Create an array of {@link DomNode} objects from their string representation.
+     * @param string|DomNode $content
+     * @return DomNode[]
+     */
+    protected function createNodes($content) {
+        if (is_string($content)) {
+            if (strpos($content, ' ') === false) {
+                $nodes = array(new $this->childClass($content, $this));
+            } else {
+                $node = new $this->parserClass($content);
+                $nodes = $node->root->children;
+            }
+        } else {
+            $nodes = (array)$content;
+        }
+        return $nodes;
+    }
+
+    public function append($content) {
+        $nodes = $this->createNodes($content);
+        foreach ($nodes as $node) {
+            $node->changeParent($this);
+        }
+        return $this;
+    }
+
+    public function attr($name, $value = null) {
+        if ($value === null)
+            return $this->getAttribute($name);
+
+        $this->setAttribute($name, $value);
+        return $this;
+    }
+
+   public function before($content) {
+      $offset = $this->index();
+      $parent = $this->parent;
+      $nodes = $this->createNodes($content);
+
+      foreach ($nodes as $node) {
+          $node->changeParent($parent, $offset);
+      }
+
+      return $this;
+   }
+
+   public function count() {
+       return 1;
+   }
+
+//   public function css($name, $value = null) {
+//
+//   }
+
+   public function prepend($content = null) {
+      $offset = 0;
+      $parent = $this;
+      $nodes = $this->createNodes($content);
+
+      foreach ($nodes as $node) {
+          $node->changeParent($parent, $offset);
+      }
+
+      return $this;
+   }
+
+   public function prop($name, $value = null) {
+      switch (strtolower($name)) {
+         case 'checked':
+         case 'disabled':
+            if ($value !== null) {
+               if ($value) {
+                  $this->attr($name, $name);
+               } else {
+                  $this->removeAttr($name);
+               }
+               return $this;
+            }
+            return $this->attr($name) == $name;
+         case 'tagname':
+            return $this->tagName($value);
+      }
+      return $this;
+   }
+
+   public function remove($selector = null) {
+      if ($selector == null) {
+         $this->delete();
+      } else {
+         $nodes = $this->select($selector);
+         foreach ($nodes as $node) {
+            $node->delete();
+         }
+      }
+   }
+
+   public function removeAttr($name) {
+      $this->deleteAttribute($name);
+
+      return $this;
+   }
+
+   public function removeProp($name) {
+      $this->removeAttr($name);
+      return $this;
+   }
+
+   public function tagName($value = null) {
+      if ($value !== null) {
+         $this->setTag($value);
+         return $this;
+      }
+      return $this->getTag();
+   }
+
+   public function text($value = null) {
+      if ($value === null)
+         return $this->getPlainText();
+
+      $this->setPlainText($value);
+      return $this;
+   }
+
+   public function toggleClass($classname, $switch = null) {
+      if ($switch === true) {
+         $this->addClass($classname);
+      } elseif ($switch === false) {
+         $this->removeClass($classname);
+      } else {
+         if ($this->hasClass($classname))
+            $this->removeClass($classname);
+         else
+            $this->addClass($classname);
+      }
+      return $this;
+   }
+
+   public function unwrap() {
+      $this->parent->detach(true);
+      return $this;
+   }
+
+   public function val($value = null) {
+      if ($value !== null) {
+         $this->setAttribute('value', $value);
+         return $this;
+      }
+      return $this->getAttribute('value');
+   }
+
 }
 
 /**
