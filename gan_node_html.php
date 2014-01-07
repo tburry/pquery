@@ -305,12 +305,12 @@ class DomNode implements IQuery {
 	}
 
 	/**
-	 * Class magic invoke method, performs {@link select()}
-	 * @return array
-	 * @access private
+	 * Class magic invoke method, performs {@link query()}.
+     * @param string $query The css query to run on the nodes.
+	 * @return \pQuery
 	 */
-	function __invoke($query = '*', $index = false, $recursive = true, $check_self = false) {
-		return $this->select($query, $index, $recursive, $check_self);
+	function __invoke($query = '*') {
+		return $this->query($query);
 	}
 
 	/**
