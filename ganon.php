@@ -1,9 +1,10 @@
 <?php
 /**
  * @author Niels A.D.
- * @package Ganon
- * @link http://code.google.com/p/ganon/
+ * @author Todd Burry <todd@vanillaforums.com>
+ * @copyright 2010 Niels A.D., 2014 Todd Burry
  * @license http://opensource.org/licenses/LGPL-2.1 LGPL-2.1
+ * @package pQuery
  */
 
 use pQuery\Html5Parser;

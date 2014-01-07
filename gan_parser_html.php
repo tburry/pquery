@@ -2,8 +2,9 @@
 /**
  * @author Niels A.D.
  * @author Todd Burry <todd@vanillaforums.com>
- * @package pQuery
+ * @copyright 2010 Niels A.D., 2014 Todd Burry
  * @license http://opensource.org/licenses/LGPL-2.1 LGPL-2.1
+ * @package pQuery
  */
 
 namespace pQuery;
