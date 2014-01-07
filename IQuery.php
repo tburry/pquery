@@ -90,6 +90,11 @@ interface IQuery {
    function removeProp($name);
 
    /**
+    * Replace each element in the set of matched elements with the provided new content and return the set of elements that was removed.
+    */
+   function replaceWith($content);
+
+   /**
     * Returns the name of the element.
     */
    function tagName($value = null);

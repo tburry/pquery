@@ -181,6 +181,13 @@ class pQuery implements IQuery {
         return $this;
     }
 
+    public function replaceWith($content) {
+        foreach ($this->nodes as &$node) {
+            $node = $node->replaceWith($content);
+        }
+        return $this;
+    }
+
     public function tagName($value = null) {
         foreach ($this->nodes as $node) {
             if ($value === null)

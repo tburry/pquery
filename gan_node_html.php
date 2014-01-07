@@ -1478,7 +1478,7 @@ class DomNode implements IQuery {
 		}
 		$class = $this->class;
 		foreach ($className as $c) {
-			$class = reg_replace('`\b'.preg_quote($c).'\b`si', '', $class);
+			$class = preg_replace('`\b'.preg_quote($c).'\b`si', '', $class);
 		}
 		if ($class) {
 			$this->class = $class;
@@ -2266,9 +2266,9 @@ class DomNode implements IQuery {
     /**
      * Create an array of {@link DomNode} objects from their string representation.
      * @param string|DomNode $content
-     * @return DomNode[]
+     * @return DomNode[]|DomNode
      */
-    protected function createNodes($content) {
+    protected function createNodes($content, $first = false) {
         if (is_string($content)) {
             if (strpos($content, ' ') === false) {
                 $nodes = array(new $this->childClass($content, $this));
@@ -2279,7 +2279,10 @@ class DomNode implements IQuery {
         } else {
             $nodes = (array)$content;
         }
-        return $nodes;
+        if ($first)
+            return reset($nodes);
+        else
+            return $nodes;
     }
 
     public function append($content) {
@@ -2370,6 +2373,19 @@ class DomNode implements IQuery {
       $this->removeAttr($name);
       return $this;
    }
+
+   function replaceWith($content) {
+        $node_index = $this->index();
+
+        // Add the new node.
+        $node = $this->createNodes($content, true);
+        $node->changeParent($this->parent, $node_index);
+
+        // Remove this node.
+        $this->remove();
+
+		return $node;
+	}
 
    public function tagName($value = null) {
       if ($value !== null) {
