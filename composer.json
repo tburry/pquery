@@ -1,5 +1,5 @@
 {
-   "name": "tburry/pquery",
+   "name": "vanilla/pquery",
    "type": "library",
    "description": "A jQuery like html dom parser written in php.",
    "keywords": ["php", "dom", "ganon"],
