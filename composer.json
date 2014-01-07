@@ -1,8 +1,17 @@
 {
-   "name": "vanilla/pquery",
+   "name": "tburry/pquery",
    "description": "A jQuery like html dom parser written php.",
    "autoload": {
-      "classmap": ["."]
+      "classmap": [
+          "IQuery.php", 
+          "gan_formatter.php", 
+          "gan_node_html.php",
+          "gan_parser_html.php",
+          "gan_selector_html.php",
+          "gan_tokenizer.php",
+          "gan_xml2array.php",
+          "pQuery.php"
+      ]
    },
    "require-dev": {
        "htmlawed/htmlawed": "dev-master"
