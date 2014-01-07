@@ -1,6 +1,12 @@
 {
    "name": "tburry/pquery",
+   "type": "library",
    "description": "A jQuery like html dom parser written php.",
+   "keywords": ["php", "dom", "ganon"],
+   "license": "LGPL-2.1",
+   "authors": [
+       { "name": "Todd Burry", "email": "todd@vanillaforums.com", "role": "Developer" }
+   ],
    "autoload": {
       "classmap": [
           "IQuery.php", 
