@@ -1,4 +1,9 @@
 # pQuery
+
+[![Latest Stable Version](https://poser.pugx.org/tburry/pquery/v/stable.png)](https://packagist.org/packages/tburry/pquery)
+[![Latest Unstable Version](https://poser.pugx.org/tburry/pquery/v/unstable.png)](https://packagist.org/packages/tburry/pquery)
+[![Build Status](https://travis-ci.org/tburry/pquery.png)](https://travis-ci.org/tburry/pquery)
+
 *A jQuery like html dom parser written php.*
 
 pQuery is a fork of the ganon dom parser located [here](https://code.google.com/p/ganon/).
