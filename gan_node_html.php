@@ -227,7 +227,8 @@ class DomNode implements IQuery {
 		'not' => 'filter_not',
 		'element' => 'filter_element',
 		'text' => 'filter_text',
-		'comment' => 'filter_comment'
+		'comment' => 'filter_comment',
+        'checked' => 'filter_checked'
 	);
 
 	/**
@@ -2242,6 +2243,15 @@ class DomNode implements IQuery {
 	protected function filter_text() {
 		return false;
 	}
+
+    /**
+     * Checks if a node matches css query filter ":checked"
+     * @return bool
+     * @see match()
+     */
+    protected function filter_checked() {
+        return strcasecmp($this->getAttribute('checked'), 'checked') === 0;
+    }
 
 	/**
 	 * Checks if node matches css query filter ":comment"
