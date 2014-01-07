@@ -12,7 +12,7 @@ pQuery is a fork of the ganon dom parser located [here](https://code.google.com/
 
 To get started using pQuery do the following.
 
-1. Require the pQuery library into your project using (composer)[http://getcomposer.org/doc/01-basic-usage.md#the-require-key].
+1. Require the pQuery library into your project using [composer](http://getcomposer.org/doc/01-basic-usage.md#the-require-key).
 2. Parse a snippet of html using `pQuery::parseStr()` or `pQuery::parseFile()` to return a document object model (DOM).
 3. Run jQuery like functions on the DOM.
 
