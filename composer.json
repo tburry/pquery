@@ -19,6 +19,9 @@
           "pQuery.php"
       ]
    },
+   "require": {
+       "php": ">=5.3.0"
+   }
    "require-dev": {
        "htmlawed/htmlawed": "dev-master"
    }
