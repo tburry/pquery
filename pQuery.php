@@ -11,7 +11,7 @@ use pQuery\IQuery;
 /**
  * A jQuery-like object for php.
  */
-class pQuery implements IQuery {
+class pQuery implements ArrayAccess, Countable, IteratorAggregate, IQuery {
     /// Properties ///
 
     /**
@@ -83,9 +83,13 @@ class pQuery implements IQuery {
      * @param array $options Extra formatting options. See {@link pQuery\HtmlFormatter::$options}.
      * @return bool Returns `true` on sucess and `false` on failure.
      */
-    public static function format($dom, $options = array()) {
-        $formatter = new pQuery\HtmlFormatter($options);
-        return $formatter->format($dom);
+//    public static function format($dom, $options = array()) {
+//        $formatter = new pQuery\HtmlFormatter($options);
+//        return $formatter->format($dom);
+//    }
+
+    public function getIterator() {
+        return new ArrayIterator($this->nodes);
     }
 
     public function hasClass($classname) {
@@ -106,6 +110,30 @@ class pQuery implements IQuery {
             $node->html($value);
         }
         return $this;
+    }
+
+    public function offsetExists($offset) {
+        return isset($this->nodes[$offset]);
+    }
+
+    public function offsetGet($offset) {
+        return isset($this->nodes[$offset]) ? $this->nodes[$offset] : null;
+    }
+
+    public function offsetSet($offset, $value) {
+
+        if (is_null($offset) || !isset($this->nodes[$offset])) {
+            throw new \BadMethodCallException("You are not allowed to add new nodes to the pQuery object.");
+        } else {
+            $this->nodes[$offset]->replaceWith($value);
+        }
+    }
+
+    public function offsetUnset($offset) {
+        if (isset($this->nodes[$offset])) {
+            $this->nodes[$offset]->remove();
+            unset($this->nodes[$offset]);
+        }
     }
 
     /**
@@ -169,7 +197,7 @@ class pQuery implements IQuery {
 
     public function removeClass($classname) {
         foreach ($this->nodes as $node) {
-            $node->removeClass($node);
+            $node->removeClass($classname);
         }
         return $this;
     }
