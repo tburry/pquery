@@ -1,7 +1,7 @@
 {
    "name": "tburry/pquery",
    "type": "library",
-   "description": "A jQuery like html dom parser written php.",
+   "description": "A jQuery like html dom parser written in php.",
    "keywords": ["php", "dom", "ganon"],
    "license": "LGPL-2.1",
    "authors": [
