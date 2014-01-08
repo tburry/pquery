@@ -2443,13 +2443,56 @@ class DomNode implements IQuery {
       return $this;
    }
 
-   public function val($value = null) {
-      if ($value !== null) {
-         $this->setAttribute('value', $value);
-         return $this;
-      }
-      return $this->getAttribute('value');
-   }
+    public function val($value = null) {
+        switch (strtolower($this->tag)) {
+            case 'select':
+                if ($value === null) {
+                    // Return the value of a selected child.
+                    return $this->query('option:selected')->attr('value');
+                } else {
+                    // Select the option with the right value and deselect the others.
+                    foreach ($this->query('option') as $option) {
+                        if ($option->attr('value') == $value) {
+                            $option->attr('selected', 'selected');
+                        } else {
+                            $option->removeAttr('selected');
+                        }
+                    }
+                    return $this;
+                }
+            case 'textarea':
+                if ($value === null) {
+                    // Return the contents of the textarea.
+                    return $this->getInnerText();
+                } else {
+                    // Set the contents of the textarea.
+                    $this->setInnerText($value);
+                    return $this;
+                }
+            case 'input':
+                switch (strtolower($this->getAttribute('type'))) {
+                    case 'checkbox':
+                        if ($value === null)
+                            return $this->prop('checked') ? $this->getAttribute('value') : null;
+                        else {
+                            if (!$value) {
+                                $this->deleteAttribute('checked');
+                            } else {
+                                $this->setAttribute('value', $value);
+                                $this->setAttribute('checked', 'checked');
+                            }
+                            return $this;
+                        }
+                }
+        }
+
+        // Other node types can just get/set the value attribute.
+        if ($value !== null) {
+           $this->setAttribute('value', $value);
+           return $this;
+        }
+        return $this->getAttribute('value');
+    }
 
 }
 
