@@ -203,13 +203,6 @@ class pQuery implements ArrayAccess, Countable, IteratorAggregate, IQuery {
         return $this;
     }
 
-    public function removeProp($name) {
-        foreach ($this->nodes as $node) {
-            $node->removeProp($name);
-        }
-        return $this;
-    }
-
     public function replaceWith($content) {
         foreach ($this->nodes as &$node) {
             $node = $node->replaceWith($content);

@@ -2380,11 +2380,6 @@ class DomNode implements IQuery {
       return $this;
    }
 
-   public function removeProp($name) {
-      $this->removeAttr($name);
-      return $this;
-   }
-
    function replaceWith($content) {
         $node_index = $this->index();
 

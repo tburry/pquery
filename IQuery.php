@@ -85,11 +85,6 @@ interface IQuery {
    function removeClass($classname);
 
    /**
-    * Remove a property for the set of matched elements.
-    */
-   function removeProp($name);
-
-   /**
     * Replace each element in the set of matched elements with the provided new content and return the set of elements that was removed.
     */
    function replaceWith($content);
