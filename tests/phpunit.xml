@@ -12,4 +12,17 @@ and open the template in the editor.
          convertNoticesToExceptions="true"
          convertWarningsToExceptions="true"
          stopOnFailure="false">
+    
+    <filter>
+        <whitelist addUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">..</directory>
+            <exclude>
+                <directory suffix=".php">../vendor</directory>
+                <directory suffix=".php">../examples</directory>
+                <file>../IQuery.php</file>
+                <file>../ganon.php</file>
+                <file>../index.php</file>
+            </exclude>
+        </whitelist>
+    </filter>
 </phpunit>

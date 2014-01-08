@@ -130,6 +130,27 @@ EOT;
         $this->assertTrue($dom->query('p')->addClass('test')->hasClass('test'));
     }
 
+    public function testParseFile() {
+        $dom = pQuery::parseFile(__DIR__.'/test-file.html');
+
+        $this->assertHtmlStringEqualsHtmlString('Hello World!', $dom('h1')->html());
+        $this->assertHtmlStringEqualsHtmlString('What is your favorite animal?', $dom('label')->html());
+    }
+
+    public function testRemoveAttr() {
+        $dom = $this->getDom();
+
+        $dom->query()->removeAttr('class');
+
+        $expected = '<div>
+            <h1>Hello World!</h1>
+            <p>This is a very <b>special</b> message.</p>
+            <p>And I am <i>giving</i> it to you.</p>
+            </div>';
+
+        $this->assertHtmlStringEqualsHtmlString($expected, $dom->html());
+    }
+
     public function testRemoveClass() {
         $dom = $this->getDom();
 
