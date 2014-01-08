@@ -173,7 +173,7 @@ class pQuery implements ArrayAccess, Countable, IteratorAggregate, IQuery {
 
         foreach ($this->nodes as $node) {
             if ($value === null)
-                return $node->prop($node);
+                return $node->prop($name);
             $node->prop($name, $value);
         }
         return $this;
