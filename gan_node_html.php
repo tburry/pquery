@@ -228,7 +228,8 @@ class DomNode implements IQuery {
 		'element' => 'filter_element',
 		'text' => 'filter_text',
 		'comment' => 'filter_comment',
-        'checked' => 'filter_checked'
+        'checked' => 'filter_checked',
+        'selected' => 'filter_selected',
 	);
 
 	/**
@@ -2263,6 +2264,15 @@ class DomNode implements IQuery {
 		return false;
 	}
 
+    /**
+     * Checks if a node matches css query filter ":selected"
+     * @return bool
+     * @see match()
+     */
+    protected function filter_selected() {
+        return strcasecmp($this->getAttribute('selected'), 'selected') === 0;
+    }
+
     public function after($content) {
         $offset = $this->index() + 1;
         $parent = $this->parent;
@@ -2344,24 +2354,29 @@ class DomNode implements IQuery {
       return $this;
    }
 
-   public function prop($name, $value = null) {
-      switch (strtolower($name)) {
-         case 'checked':
-         case 'disabled':
-            if ($value !== null) {
-               if ($value) {
-                  $this->attr($name, $name);
-               } else {
-                  $this->removeAttr($name);
-               }
-               return $this;
-            }
-            return $this->attr($name) == $name;
-         case 'tagname':
-            return $this->tagName($value);
-      }
-      return $this;
-   }
+    public function prop($name, $value = null) {
+        switch (strtolower($name)) {
+            case 'checked':
+            case 'disabled':
+            case 'selected':
+                if ($value !== null) {
+                    if ($value) {
+                        $this->attr($name, $name);
+                    } else {
+                        $this->removeAttr($name);
+                    }
+                    return $this;
+                }
+                return $this->attr($name) == $name;
+            case 'tagname':
+                return $this->tagName($value);
+        }
+        // The property is not supported, degrade gracefully
+        if ($value === null)
+            return $this;
+        else
+            return null;
+    }
 
    public function remove($selector = null) {
       if ($selector == null) {
