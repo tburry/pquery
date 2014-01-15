@@ -225,7 +225,7 @@ class HtmlFormatter {
 					}
 				}
 				$c->text = $text;
-			} catch (Exception $e) {
+			} catch (\Exception $e) {
 				$errors[] = array($e, $c->parent->dumpLocation());
 			}
 		}
@@ -268,7 +268,7 @@ class HtmlFormatter {
 		if ($root->select(':element', true, false, true)) {
 			$root->setTag(strtolower($root->tag), true);
 			if (($this->options['img_alt'] !== null) && ($root_tag === 'img') && (!isset($root->alt))) {
-				$root->alt = $this->options['img_alt'];
+                $root->setAttribute('alt', $this->options['img_alt']);
 			}
 		}
 		if ($this->options['self_close_str'] !== null) {
@@ -280,7 +280,7 @@ class HtmlFormatter {
 
 		$prev = null;
 		$n_tag = '';
-		$prev_tag = '';
+//		$prev_tag = '';
 		$as_block = false;
 		$prev_asblock = false;
 		for($i = 0; $i < $child_count; $i++) {
@@ -352,7 +352,7 @@ class HtmlFormatter {
 			}
 
 			$prev = $n;
-			$prev_tag = $n_tag;
+//			$prev_tag = $n_tag;
 			$prev_asblock = $as_block;
 		}
 
