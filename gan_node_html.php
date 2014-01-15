@@ -12,6 +12,7 @@ namespace pQuery;
 /**
  * Holds (x)html/xml tag information like tag name, attributes,
  * parent, children, self close, etc.
+ *
  */
 class DomNode implements IQuery {
 
@@ -547,7 +548,7 @@ class DomNode implements IQuery {
 
 	/**
 	 * Change parent
-	 * @param DomNode $to New parent, null if none
+	 * @param null|DomNode $to New parent, null if none
 	 * @param false|int $index Add child to parent if not present at index, false to not add, negative to cound from end, null to append
 	 */
 	#php4
