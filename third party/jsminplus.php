@@ -887,7 +887,7 @@ class JSParser
 					{
 						if (count($n2->treeNodes) != 1)
 						{
-							throw $this->t->SyntaxError(
+							throw $this->t->newSyntaxError(
 								'Invalid for..in left-hand side',
 								$this->t->filename,
 								$n2->lineno
