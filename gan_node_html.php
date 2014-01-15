@@ -361,7 +361,7 @@ class DomNode implements IQuery {
 	 * Returns the node as string
 	 * @param bool $attributes Print attributes (of child tags)
 	 * @param bool|int $recursive How many sublevels of childtags to print. True for all.
-	 * @param bool $content_only Only print text, false will print tags too.
+	 * @param bool|int $content_only Only print text, false will print tags too.
 	 * @return string
 	 */
 	function toString($attributes = true, $recursive = true, $content_only = false) {
@@ -419,6 +419,7 @@ class DomNode implements IQuery {
 	/**
 	 * Return html code of node
 	 * @internal jquery (naming) compatibility
+     * @param string|null $value The value to set or null to get the value.
 	 * @see toString()
 	 * @return string
 	 */
@@ -547,7 +548,7 @@ class DomNode implements IQuery {
 	/**
 	 * Change parent
 	 * @param DomNode $to New parent, null if none
-	 * @param int $index Add child to parent if not present at index, false to not add, negative to cound from end, null to append
+	 * @param false|int $index Add child to parent if not present at index, false to not add, negative to cound from end, null to append
 	 */
 	#php4
 	#function changeParent($to, &$index) {
@@ -973,7 +974,7 @@ class DomNode implements IQuery {
 	#php5e
         if (is_array($tag)) {
             $tag = new $this->childClass($tag, $this);
-        } elseif (!is_object($tag)) {
+        } elseif (is_string($tag)) {
             $nodes = $this->createNodes($tag);
             $tag = array_shift($nodes);
 
@@ -981,7 +982,7 @@ class DomNode implements IQuery {
                 $index = false;
                 $tag->changeParent($this, $index);
             }
-		} elseif ($tag->parent !== $this) {
+		} elseif (is_object($tag) && $tag->parent !== $this) {
 			$index = false; //Needs to be passed by ref
 			$tag->changeParent($this, $index);
 		}
@@ -2251,7 +2252,10 @@ class DomNode implements IQuery {
      * @see match()
      */
     protected function filter_checked() {
-        return strcasecmp($this->getAttribute('checked'), 'checked') === 0;
+        $attr = $this->getAttribute('checked');
+        if (is_array($attr))
+            $attr = reset($attr);
+        return strcasecmp($attr, 'checked') === 0;
     }
 
 	/**
@@ -2270,7 +2274,11 @@ class DomNode implements IQuery {
      * @see match()
      */
     protected function filter_selected() {
-        return strcasecmp($this->getAttribute('selected'), 'selected') === 0;
+        $attr = $this->getAttribute('selected');
+        if (is_array($attr))
+            $attr = reset($attr);
+
+        return strcasecmp($attr, 'selected') === 0;
     }
 
     public function after($content) {
@@ -2284,12 +2292,23 @@ class DomNode implements IQuery {
         return $this;
     }
 
+
+    /**
+     * Create a {@link DomNode} from its string representation.
+     * @param string|DomNode $content
+     * @return DomNode
+     */
+    protected function createNode($content) {
+        $nodes = $this->createNodes($content);
+        return reset($nodes);
+    }
+
     /**
      * Create an array of {@link DomNode} objects from their string representation.
      * @param string|DomNode $content
-     * @return DomNode[]|DomNode
+     * @return DomNode[]
      */
-    protected function createNodes($content, $first = false) {
+    protected function createNodes($content) {
         if (is_string($content)) {
             if (strpos($content, ' ') === false) {
                 $nodes = array(new $this->childClass($content, $this));
@@ -2300,10 +2319,7 @@ class DomNode implements IQuery {
         } else {
             $nodes = (array)$content;
         }
-        if ($first)
-            return reset($nodes);
-        else
-            return $nodes;
+        return $nodes;
     }
 
     public function append($content) {
@@ -2399,7 +2415,7 @@ class DomNode implements IQuery {
         $node_index = $this->index();
 
         // Add the new node.
-        $node = $this->createNodes($content, true);
+        $node = $this->createNode($content);
         $node->changeParent($this->parent, $node_index);
 
         // Remove this node.
