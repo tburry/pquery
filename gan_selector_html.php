@@ -566,6 +566,18 @@ class HtmlSelector {
 					}
 
 					$tok = $p->next();
+                } elseif ($tag === 'text' && $tok === CSSQueryTokenizer::TOK_BRACE_OPEN) {
+                    $pos = $p->getPos();
+                    $tok = $p->next();
+                    if ($tok === CSSQueryTokenizer::TOK_BRACE_CLOSE) {
+                        $conditions['tags'][] = array(
+                            'tag' => '~text~',
+                            'match' => true
+                        );
+                        $p->next();
+                    } else {
+                        $p->setPos($pos);
+                    }
 				} else {
 					$conditions['tags'][] = array(
 						'tag' => $tag,
