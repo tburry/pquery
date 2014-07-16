@@ -17,6 +17,22 @@ class SelectorTest extends pQueryTestCase {
         $this->assertEquals('moon-base', $dom->query('#house')->val());
     }
 
+    public function testText() {
+        $html = <<<HTML
+<h1>foo bar</h1>
+HTML;
+
+        $dom = pQuery::parseStr($html);
+        $q = $dom->query('text()');
+
+        $this->assertSame(1, $q->count());
+        $this->assertSame('foo bar', $q->text());
+        $this->assertSame('foo bar', $q->html());
+
+        $q->text('hello world');
+        $this->assertSame('hello world', $q->text());
+    }
+
     /// Helpers ///
 
     /**

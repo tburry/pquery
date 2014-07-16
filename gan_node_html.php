@@ -2556,6 +2556,28 @@ class TextNode extends DomNode {
 	function toString_attributes() {return '';}
 	function toString_content($attributes = true, $recursive = true, $content_only = false) {return $this->text;}
 	function toString($attributes = true, $recursive = true, $content_only = false) {return $this->text;}
+
+    /**
+     * {@inheritdoc}
+     */
+    public function text($value = null) {
+        if ($value !== null) {
+            $this->text = $value;
+            return $this;
+        }
+        return $this->text;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function html($value = null) {
+        if ($value !== null) {
+            $this->text = $value;
+            return $this;
+        }
+        return $this->text;
+    }
 }
 
 /**
