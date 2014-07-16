@@ -1933,7 +1933,8 @@ class DomNode implements IQuery {
 	 * false to return array, int to return match at index, negative int to count from end
 	 * @param bool|int $recursive
 	 * @param bool $check_self Include this node in search or only search childnodes
-	 * @return DomNode
+	 * @return DomNode[]|DomNode Returns an array of matching {@link DomNode} objects
+     *  or a single {@link DomNode} if `$index` is not false.
 	 */
 	function select($query = '*', $index = false, $recursive = true, $check_self = false) {
 		$s = new $this->selectClass($this, $query, $check_self, $recursive);
@@ -2399,7 +2400,7 @@ class DomNode implements IQuery {
       if ($selector == null) {
          $this->delete();
       } else {
-         $nodes = $this->select($selector);
+         $nodes = (array)$this->select($selector);
          foreach ($nodes as $node) {
             $node->delete();
          }
@@ -2425,13 +2426,17 @@ class DomNode implements IQuery {
 		return $node;
 	}
 
-   public function tagName($value = null) {
-      if ($value !== null) {
-         $this->setTag($value);
-         return $this;
-      }
-      return $this->getTag();
-   }
+    /**
+     * @param type $value
+     * @return string|DomNode
+     */
+    public function tagName($value = null) {
+        if ($value !== null) {
+            $this->setTag($value);
+            return $this;
+        }
+        return $this->getTag();
+    }
 
    public function text($value = null) {
       if ($value === null)
