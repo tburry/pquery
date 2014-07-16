@@ -1494,7 +1494,7 @@ class DomNode implements IQuery {
 
 	/**
 	 * Finds children using a callback function
-	 * @param function $callback Function($node) that returns a bool
+	 * @param callable $callback Function($node) that returns a bool
 	 * @param bool|int $recursive Check recursively
 	 * @param bool $check_self Include this node in search?
 	 * @return array
