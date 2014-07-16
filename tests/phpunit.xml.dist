@@ -1,17 +1,27 @@
 <?xml version="1.0"?>
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
-
-<!-- see http://www.phpunit.de/wiki/Documentation -->
-<phpunit bootstrap="./bootstrap.php"
+<phpunit backupGlobals="false"
+         backupStaticAttributes="false"
          colors="true"
          convertErrorsToExceptions="true"
          convertNoticesToExceptions="true"
          convertWarningsToExceptions="true"
-         stopOnFailure="false">
+         processIsolation="false"
+         stopOnFailure="false"
+         syntaxCheck="false"
+         bootstrap="./bootstrap.php">
+
+    <php>
+        <ini name="intl.default_locale" value="en"/>
+        <ini name="intl.error_level" value="0"/>
+        <ini name="memory_limit" value="-1"/>
+        <ini name="date.timezone" value="America/Montreal"/>
+    </php>
+
+    <testsuites>
+        <testsuite name="pQuery Test Suite">
+            <directory suffix="Test.php">.</directory>
+        </testsuite>
+    </testsuites>
     
     <filter>
         <whitelist addUncoveredFilesFromWhitelist="true">
