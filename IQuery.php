@@ -8,18 +8,21 @@ interface IQuery {
    /**
     * Adds the specified class(es) to each of the set of matched elements.
     * @param string $classname The name of the class to add. You can add multiple classes by seperating them with spaces.
+    * @return IQuery
     */
    function addClass($classname);
 
    /**
     * Insert content, specified by the parameter, after each element in the set of matched elements.
     * @param string $content The content to add.
+    * @return IQuery
     */
    function after($content);
 
    /**
     * Insert content, specified by the parameter, to the end of each element in the set of matched elements.
     * @param string $content The content to append.
+    * @return IQuery
     */
    function append($content);
 
@@ -28,17 +31,20 @@ interface IQuery {
     * or more attributes for every matched element.
     * @param string $name The name of the attribute.
     * @param null|string $value The value to set or null to get the current attribute value.
+    * @return string|IQuery
     */
    function attr($name, $value = null);
 
    /**
     * Insert content, specified by the parameter, before each element in the set of matched elements.
     * @param string $content The content to add.
+    * @return IQuery
     */
    function before($content);
 
    /**
     * Remove all child nodes of the set of matched elements from the DOM.
+    * @return IQuery;
     */
    function clear();
 
