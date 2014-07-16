@@ -1,10 +1,10 @@
 # pQuery
 
-[![Latest Stable Version](https://poser.pugx.org/tburry/pquery/v/stable.png)](https://packagist.org/packages/tburry/pquery)
-[![Latest Unstable Version](https://poser.pugx.org/tburry/pquery/v/unstable.png)](https://packagist.org/packages/tburry/pquery)
-[![Build Status](https://travis-ci.org/tburry/pquery.png)](https://travis-ci.org/tburry/pquery)
+[![Build Status](https://img.shields.io/travis/tburry/pquery.svg?style=flat)](https://travis-ci.org/tburry/pquery)
+[![Coverage](https://img.shields.io/scrutinizer/coverage/g/tburry/pquery.svg?style=flat)](https://scrutinizer-ci.com/g/tburry/pquery/)
+[![Latest Stable Version](http://img.shields.io/packagist/v/tburry/pquery.svg?style=flat)](https://packagist.org/packages/tburry/pquery)
 
-pQuery is a jQuery like html dom parser written php. It is a fork of the ganon dom parser located [here](https://code.google.com/p/ganon/).
+pQuery is a jQuery like html dom parser written php. It is a fork of the [ganon dom parser](https://code.google.com/p/ganon/).
 
 ## Basic usage
 
@@ -18,7 +18,7 @@ To get started using pQuery do the following.
 
 The following example parses an html string and does some manipulation on it.
 
-```
+```php
 $html = '<div class="container">
   <div class="inner verb">Hello</div>
   <div class="inner adj">Cruel</div>
