@@ -2,7 +2,7 @@
 
 namespace pQuery;
 
-interface IQuery {
+interface IQuery extends \Countable {
    /// Methods ///
 
    /**
@@ -47,12 +47,6 @@ interface IQuery {
     * @return IQuery;
     */
    function clear();
-
-   /**
-    * Gets the count of matched elements.
-    * @return int Returns the number of matched elements.
-    */
-   function count();
 
    /**
     * Get the value of a style property for the first element in the set of matched elements or
