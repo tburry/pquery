@@ -44,4 +44,14 @@ class BasicTest extends pQueryTestCase {
         $this->assertHtmlStringEqualsHtmlString($expected, $dom->html());
     }
 
+    /**
+     * Test attributes with no quotes.
+     */
+    public function testAttrWithoutQuotes() {
+        $html = '<a href=/index.php/example>Example</a>';
+        $dom = pQuery::parseStr($html);
+
+        $this->assertSame('/index.php/example', $dom->query('a')->attr('href'));
+    }
+
 }

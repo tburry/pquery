@@ -313,14 +313,18 @@ class HtmlParserBase extends TokenizerBase {
 				if ($this->next_no_whitespace() === self::TOK_STRING) {
 					$val = $this->getTokenString(1, -1);
 				} else {
+					$this->token_start = $this->pos;
 					if (!isset($stop)) {
 						$stop = $this->whitespace;
 						$stop['<'] = true;
 						$stop['>'] = true;
 					}
 
-					while ((++$this->pos < $this->size) && (!isset($stop[$this->doc[$this->pos]]))) {}
+					while ((++$this->pos < $this->size) && (!isset($stop[$this->doc[$this->pos]]))) {
+						// Do nothing.
+					}
 					--$this->pos;
+
 					$val = $this->getTokenString();
 
 					if (trim($val) === '') {
