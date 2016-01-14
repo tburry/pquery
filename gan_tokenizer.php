@@ -96,7 +96,7 @@ class TokenizerBase {
 	var $token = self::TOK_NULL;
 
 	/**
-	 * Startposition of token. If NULL, then current position is used.
+	 * Start position of token. If NULL, then current position is used.
 	 * @var int
 	 * @internal Public for faster access!
 	 * @see getTokenString()
@@ -107,7 +107,7 @@ class TokenizerBase {
 	/**
 	 * List with all the character that can be considered as whitespace
 	 * @var array|string
-	 * @internal Variable is public + asscociated array for faster access!
+	 * @internal Variable is public + associated array for faster access!
 	 * @internal array(' ' => true) will recognize space (' ') as whitespace
 	 * @internal String will be converted to array in constructor
 	 * @internal Result token will be {@link self::TOK_WHITESPACE};
@@ -120,8 +120,8 @@ class TokenizerBase {
 	/**
 	 * List with all the character that can be considered as identifier
 	 * @var array|string
-	 * @internal Variable is public + asscociated array for faster access!
-	 * @internal array('a' => true) will recognize 'a' as identifer
+	 * @internal Variable is public + associated array for faster access!
+	 * @internal array('a' => true) will recognize 'a' as identifier
 	 * @internal String will be converted to array in constructor
 	 * @internal Result token will be {@link self::TOK_IDENTIFIER};
 	 * @see setIdentifiers()
@@ -133,7 +133,7 @@ class TokenizerBase {
 	/**
 	 * All characters that should be mapped to a token/function that cannot be considered as whitespace or identifier
 	 * @var array
-	 * @internal Variable is public + asscociated array for faster access!
+	 * @internal Variable is public + associated array for faster access!
 	 * @internal array('a' => 'parse_a') will call $this->parse_a() if it matches the character 'a'
 	 * @internal array('a' => self::TOK_A) will set token to TOK_A if it matches the character 'a'
 	 * @see mapChar()
@@ -143,7 +143,7 @@ class TokenizerBase {
 	var $custom_char_map = array();
 
 	/**
-	 * Automaticly built character map. Built using {@link $identifiers}, {@link $whitespace} and {@link $custom_char_map}
+	 * Automatically built character map. Built using {@link $identifiers}, {@link $whitespace} and {@link $custom_char_map}
 	 * @var array
 	 * @internal Public for faster access!
 	 * @access private
@@ -304,7 +304,7 @@ class TokenizerBase {
 	 * Maps a custom character to a token/function
 	 *
 	 * Used like: mapChar('a', self::{@link TOK_IDENTIFIER}) or mapChar('a', 'parse_identifier');
-	 * @param string $char Character that should be mapped. If set, it will be overriden
+	 * @param string $char Character that should be mapped. If set, it will be overridden
 	 * @param int|string $map If function name, then $this->function will be called, otherwise token is set to $map
 	 * @see unmapChar()
 	 */
@@ -449,9 +449,9 @@ class TokenizerBase {
 	}
 
 	/**
-	 * Finds the next token using stopcharacters
+	 * Finds the next token using stop characters.
 	 *
-	 * Used like: next_search('abc') or next_seach(array('a' => true, 'b' => true, 'c' => true));
+	 * Used like: next_search('abc') or next_search(array('a' => true, 'b' => true, 'c' => true));
 	 * @param string|array $characters Characters to search for
 	 * @param bool $callback Should the function check the charmap after finding a character?
 	 * @return int Next token ({@link TOK_NULL} if none)

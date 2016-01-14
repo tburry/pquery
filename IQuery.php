@@ -2,12 +2,12 @@
 
 namespace pQuery;
 
-interface IQuery {
+interface IQuery extends \Countable {
    /// Methods ///
 
    /**
     * Adds the specified class(es) to each of the set of matched elements.
-    * @param string $classname The name of the class to add. You can add multiple classes by seperating them with spaces.
+    * @param string $classname The name of the class to add. You can add multiple classes by separating them with spaces.
     * @return IQuery
     */
    function addClass($classname);
@@ -47,12 +47,6 @@ interface IQuery {
     * @return IQuery;
     */
    function clear();
-
-   /**
-    * Gets the count of matched elements.
-    * @return int Returns the number of matched elements.
-    */
-   function count();
 
    /**
     * Get the value of a style property for the first element in the set of matched elements or

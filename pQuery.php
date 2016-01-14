@@ -12,7 +12,7 @@ use pQuery\IQuery;
 /**
  * A jQuery-like object for php.
  */
-class pQuery implements ArrayAccess, Countable, IteratorAggregate, IQuery {
+class pQuery implements ArrayAccess, IteratorAggregate, IQuery {
     /// Properties ///
 
     /**
@@ -73,6 +73,11 @@ class pQuery implements ArrayAccess, Countable, IteratorAggregate, IQuery {
         return $this;
     }
 
+    /**
+     * Get the count of matched elements.
+     *
+     * @return int Returns the count of matched elements.
+     */
     public function count() {
         return count($this->nodes);
     }

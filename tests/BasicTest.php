@@ -43,5 +43,4 @@ class BasicTest extends pQueryTestCase {
 
         $this->assertHtmlStringEqualsHtmlString($expected, $dom->html());
     }
-
 }
