@@ -21,4 +21,21 @@ class IssueTest extends pQueryTestCase {
 
         $this->assertSame('/index.php/example', $dom->query('a')->attr('href'));
     }
+
+    /**
+     * Make sure that the {@link pQuery} class is still {@link Countable}.
+     *
+     * @link https://github.com/tburry/pquery/issues/8
+     */
+    public function testStillCountable() {
+        $html = 'Is <b>this</b> what you <b>want</b>?';
+        $dom = pQuery::parseStr($html);
+
+        $pq = $dom->query('b');
+
+        $this->assertTrue($pq instanceof \pQuery\IQuery);
+        $this->assertTrue($pq instanceof \Countable);
+        $count = count($pq);
+        $this->assertSame(2, $count);
+    }
 }
