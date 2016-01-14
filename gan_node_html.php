@@ -144,7 +144,7 @@ class DomNode implements IQuery {
 	var $attributes_ns = null;
 
 	/**
-	 * Array of childnodes
+	 * Array of child nodes
 	 * @var array
 	 * @internal Public for faster access!
 	 * @see childCount()
@@ -186,7 +186,7 @@ class DomNode implements IQuery {
 	var $self_close_str = ' /';
 
 	/**
-	 * Use shorttags for attributes? If true, then attributes
+	 * Use short tags for attributes? If true, then attributes
 	 * with values equal to the attribute name will not output
 	 * the value, e.g. selected="selected" will be selected.
 	 * @var bool
@@ -361,7 +361,7 @@ class DomNode implements IQuery {
 	/**
 	 * Returns the node as string
 	 * @param bool $attributes Print attributes (of child tags)
-	 * @param bool|int $recursive How many sublevels of childtags to print. True for all.
+	 * @param bool|int $recursive How many sub-levels of child tags to print. True for all.
 	 * @param bool|int $content_only Only print text, false will print tags too.
 	 * @return string
 	 */
@@ -398,7 +398,7 @@ class DomNode implements IQuery {
 	}
 
 	/**
-	 * Similar to JavaScript outerText, will replace node (and childnodes) with new text
+	 * Similar to JavaScript outerText, will replace node (and child nodes) with new text
 	 * @param string $text
 	 * @param HtmlParserBase $parser Null to auto create instance
 	 * @return bool|array True on succeed, array with errors on failure
@@ -440,7 +440,7 @@ class DomNode implements IQuery {
 	}
 
 	/**
-	 * Similar to JavaScript innerText, will replace childnodes with new text
+	 * Similar to JavaScript innerText, will replace child nodes with new text
 	 * @param string $text
 	 * @param HtmlParserBase $parser Null to auto create instance
 	 * @return bool|array True on succeed, array with errors on failure
@@ -480,7 +480,7 @@ class DomNode implements IQuery {
 	}
 
 	/**
-	 * Similar to JavaScript plainText, will replace childnodes with new text (literal)
+	 * Similar to JavaScript plainText, will replace child nodes with new text (literal)
 	 * @param string $text
 	 */
 	function setPlainText($text) {
@@ -504,7 +504,7 @@ class DomNode implements IQuery {
 
 	/**
 	 * Detach node from parent
-	 * @param bool $move_children_up Only detach current node and replace it with childnodes
+	 * @param bool $move_children_up Only detach current node and replace it with child nodes
 	 * @internal jquery (naming) compatibility
 	 * @see delete()
 	 */
@@ -549,7 +549,7 @@ class DomNode implements IQuery {
 	/**
 	 * Change parent
 	 * @param null|DomNode $to New parent, null if none
-	 * @param false|int $index Add child to parent if not present at index, false to not add, negative to cound from end, null to append
+	 * @param false|int $index Add child to parent if not present at index, false to not add, negative to count from end, null to append
 	 */
 	#php4
 	#function changeParent($to, &$index) {
@@ -627,7 +627,7 @@ class DomNode implements IQuery {
 	/**
 	 * Move node to other node
 	 * @param DomNode $to New parent, null if none
-	 * @param int $new_index Add child to parent at index if not present, null to not add, negative to cound from end
+	 * @param int $new_index Add child to parent at index if not present, null to not add, negative to count from end
 	 * @internal Performs {@link changeParent()}
 	 */
 	#php4
@@ -640,9 +640,9 @@ class DomNode implements IQuery {
 	}
 
 	/**
-	 * Move childnodes to other node
+	 * Move child nodes to other node
 	 * @param DomNode $to New parent, null if none
-	 * @param int $new_index Add child to new node at index if not present, null to not add, negative to cound from end
+	 * @param int $new_index Add child to new node at index if not present, null to not add, negative to count from end
 	 * @param int $start Index from child node where to start wrapping, 0 for first element
 	 * @param int $end Index from child node where to end wrapping, -1 for last element
 	 */
@@ -962,8 +962,8 @@ class DomNode implements IQuery {
 	}
 
 	/**
-	 * Add childnode
-	 * @param string|DomNode $tag Tagname or object
+	 * Add child node
+	 * @param string|DomNode $tag Tag name or object
 	 * @param int $offset Position to insert node, negative to count from end, null to append
 	 * @return DomNode Added node
 	 */
@@ -1030,7 +1030,7 @@ class DomNode implements IQuery {
 	}
 
 	/**
-	 * Add textnode
+	 * Add text node
 	 * @param string $text
 	 * @param int $offset Position to insert node, negative to count from end, null to append
 	 * @return DomNode Added node
@@ -1112,7 +1112,7 @@ class DomNode implements IQuery {
 
 	/**
 	 * Add xml node
-	 * @param string $tag Tagname after "?", e.g. "php" or "xml"
+	 * @param string $tag Tag name after "?", e.g. "php" or "xml"
 	 * @param string $text
 	 * @param array $attributes Array of attributes (array('attribute' => 'value'))
 	 * @param int $offset Position to insert node, negative to count from end, null to append
@@ -1130,7 +1130,7 @@ class DomNode implements IQuery {
 
 	/**
 	 * Add ASP node
-	 * @param string $tag Tagname after "%"
+	 * @param string $tag Tag name after "%"
 	 * @param string $text
 	 * @param array $attributes Array of attributes (array('attribute' => 'value'))
 	 * @param int $offset Position to insert node, negative to count from end, null to append
@@ -1147,7 +1147,7 @@ class DomNode implements IQuery {
 	}
 
 	/**
-	 * Delete a childnode
+	 * Delete a child node
 	 * @param int|DomNode $child Child(index) to delete, negative to count from end
 	 * @param bool $soft_delete False to call {@link delete()} from child
 	 */
@@ -1198,7 +1198,7 @@ class DomNode implements IQuery {
 	}
 
 	/**
-	 * Wrap childnodes
+	 * Wrap child nodes
 	 * @param string|DomNode $node Wrapping node, string to create new element node
 	 * @param int $start Index from child node where to start wrapping, 0 for first element
 	 * @param int $end Index from child node where to end wrapping, -1 for last element
@@ -1932,7 +1932,7 @@ class DomNode implements IQuery {
 	 * @param int|bool $index True to return node instead of array if only 1 match,
 	 * false to return array, int to return match at index, negative int to count from end
 	 * @param bool|int $recursive
-	 * @param bool $check_self Include this node in search or only search childnodes
+	 * @param bool $check_self Include this node in search or only search child nodes
 	 * @return DomNode[]|DomNode Returns an array of matching {@link DomNode} objects
      *  or a single {@link DomNode} if `$index` is not false.
 	 */

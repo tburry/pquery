@@ -7,7 +7,7 @@ interface IQuery {
 
    /**
     * Adds the specified class(es) to each of the set of matched elements.
-    * @param string $classname The name of the class to add. You can add multiple classes by seperating them with spaces.
+    * @param string $classname The name of the class to add. You can add multiple classes by separating them with spaces.
     * @return IQuery
     */
    function addClass($classname);
