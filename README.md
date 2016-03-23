@@ -4,7 +4,7 @@
 [![Coverage](https://img.shields.io/scrutinizer/coverage/g/tburry/pquery.svg?style=flat)](https://scrutinizer-ci.com/g/tburry/pquery/)
 [![Latest Stable Version](http://img.shields.io/packagist/v/tburry/pquery.svg?style=flat)](https://packagist.org/packages/tburry/pquery)
 
-pQuery is a jQuery like html dom parser written php. It is a fork of the [ganon dom parser](https://code.google.com/p/ganon/).
+pQuery is a jQuery like html dom parser written in php. It is a fork of the [ganon dom parser](https://code.google.com/p/ganon/).
 
 ## Basic usage
 
