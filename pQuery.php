@@ -48,12 +48,14 @@ class pQuery implements ArrayAccess, IteratorAggregate, IQuery {
     }
 
     public function attr($name, $value = null) {
-        if (empty($this->nodes) && $value === null)
+        if (empty($this->nodes) && $value === null){
             return '';
+        }
 
         foreach ($this->nodes as $node) {
-            if ($value === null)
+            if ($value === null){
                 return $node->attr($name);
+            }     
             $node->attr($name, $value);
         }
         return $this;
@@ -100,19 +102,22 @@ class pQuery implements ArrayAccess, IteratorAggregate, IQuery {
 
     public function hasClass($classname) {
         foreach ($this->nodes as $node) {
-            if ($node->hasClass($classname))
+            if ($node->hasClass($classname)){
                 return true;
+            }
         }
         return false;
     }
 
     public function html($value = null) {
-        if (empty($this->nodes) && $value === null)
+        if (empty($this->nodes) && $value === null){
             return '';
+        }
 
         foreach ($this->nodes as $node) {
-            if ($value === null)
+            if ($value === null){
                 return $node->html();
+            }
             $node->html($value);
         }
         return $this;
@@ -173,12 +178,14 @@ class pQuery implements ArrayAccess, IteratorAggregate, IQuery {
     }
 
     public function prop($name, $value = null) {
-        if (empty($this->nodes) && $value === null)
+        if (empty($this->nodes) && $value === null){
             return '';
+        }
 
         foreach ($this->nodes as $node) {
-            if ($value === null)
+            if ($value === null){
                 return $node->prop($name);
+            }
             $node->prop($name, $value);
         }
         return $this;
@@ -188,8 +195,9 @@ class pQuery implements ArrayAccess, IteratorAggregate, IQuery {
         foreach ($this->nodes as $node) {
             $node->remove($selector);
         }
-        if ($selector === null)
+        if ($selector === null){
             $this->nodes = array();
+        }
 
         return $this;
     }
@@ -217,20 +225,23 @@ class pQuery implements ArrayAccess, IteratorAggregate, IQuery {
 
     public function tagName($value = null) {
         foreach ($this->nodes as $node) {
-            if ($value === null)
+            if ($value === null){
                 return $node->tagName();
+            }
             $node->tagName($value);
         }
         return $this;
     }
 
     public function text($value = null) {
-        if (empty($this->nodes) && $value === null)
+        if (empty($this->nodes) && $value === null){
             return '';
+        }
 
         foreach ($this->nodes as $node) {
-            if ($value === null)
+            if ($value === null){
                 return $node->text();
+            }
             $node->text($value);
         }
         return $this;
@@ -252,12 +263,14 @@ class pQuery implements ArrayAccess, IteratorAggregate, IQuery {
     }
 
     public function val($value = null) {
-        if (empty($this->nodes) && $value === null)
+        if (empty($this->nodes) && $value === null){
             return '';
+        }
 
         foreach ($this->nodes as $node) {
-            if ($value === null)
+            if ($value === null){
                 return $node->val();
+            }
             $node->val($value);
         }
         return $this;
