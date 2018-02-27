@@ -30,14 +30,7 @@ function str_get_dom($str, $return_root = true) {
  * @return Html5Parser|DomNode
  */
 function file_get_dom($file, $return_root = true, $use_include_path = false, $context = null) {
-	if (version_compare(PHP_VERSION, '5.0.0', '>='))
-		$f = file_get_contents($file, $use_include_path, $context);
-	else {
-		if ($context !== null)
-			trigger_error('Context parameter not supported in this PHP version');
-		$f = file_get_contents($file, $use_include_path);
-	}
-
+	$f = file_get_contents($file, $use_include_path, $context);
 	return (($f === false) ? false : str_get_dom($f, $return_root));
 }
 
@@ -50,40 +43,6 @@ function file_get_dom($file, $return_root = true, $use_include_path = false, $co
 function dom_format(&$root, $options = array()) {
 	$formatter = new HtmlFormatter($options);
 	return $formatter->format($root);
-}
-
-if (version_compare(PHP_VERSION, '5.0.0', '<')) {
-	/**
-	 * PHP alternative to str_split, for backwards compatibility
-	 * @param string $string
-	 * @return string
-	 */
-	function str_split($string) {
-		$res = array();
-		$size = strlen($string);
-		for ($i = 0; $i < $size; $i++) {
-			$res[] = $string[$i];
-		}
-
-		return $res;
-	}
-}
-
-if (version_compare(PHP_VERSION, '5.2.0', '<')) {
-	/**
-	 * PHP alternative to array_fill_keys, for backwards compatibility
-	 * @param array $keys
-	 * @param mixed $value
-	 * @return array
-	 */
-	function array_fill_keys($keys, $value) {
-		$res = array();
-		foreach($keys as $k) {
-			$res[$k] = $value;
-		}
-
-		return $res;
-	}
 }
 
 #!! <- Ignore when converting to single file

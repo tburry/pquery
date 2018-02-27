@@ -19,6 +19,10 @@ To get started using pQuery do the following.
 The following example parses an html string and does some manipulation on it.
 
 ```php
+
+// composer autoload
+require "vendor/autoload.php";
+
 $html = '<div class="container">
   <div class="inner verb">Hello</div>
   <div class="inner adj">Cruel</div>

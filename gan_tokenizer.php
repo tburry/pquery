@@ -57,6 +57,12 @@ class TokenizerBase {
 	 * @access private
 	 */
 	var $doc = '';
+    
+    /**
+     * The document as string in lowercase for faster search in next_pos()
+     * @var string 
+     */
+	var $doc_lower = '';
 
 	/**
 	 * The size of the document (length of string)
@@ -184,6 +190,7 @@ class TokenizerBase {
 	 */
 	function setDoc($doc, $pos = 0) {
 		$this->doc = $doc;
+		$this->doc_lower = strtolower($doc);
 		$this->size = strlen($doc);
 		$this->setPos($pos);
 	}
@@ -489,7 +496,10 @@ class TokenizerBase {
 	 */
 	function next_pos($needle, $callback = true) {
 		$this->token_start = $this->pos;
-		if (($this->pos < $this->size) && (($p = stripos($this->doc, $needle, $this->pos + 1)) !== false)) {
+        
+        $needle_lower = strtolower($needle);
+        
+		if (($this->pos < $this->size) && (($p = strpos($this->doc_lower, $needle_lower, $this->pos + 1)) !== false)) {
 
 			$len = $p - $this->pos - 1;
 			if ($len > 0) {
