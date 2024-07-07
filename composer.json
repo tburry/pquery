@@ -1,7 +1,7 @@
 {
-   "name": "tburry/pquery",
+   "name": "guyavatrade/pquery",
    "type": "library",
-   "description": "A jQuery like html dom parser written in php.",
+   "description": "A jQuery like html dom parser written in php. This fork add fixes for php 8.1",
    "keywords": ["php", "dom", "ganon"],
    "license": "LGPL-2.1",
    "authors": [

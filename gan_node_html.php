@@ -2352,7 +2352,7 @@ class DomNode implements IQuery {
       return $this;
    }
 
-   public function count() {
+   public function count(): int{
        return 1;
    }
 
